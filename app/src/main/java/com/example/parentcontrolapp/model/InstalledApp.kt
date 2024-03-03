@@ -6,5 +6,6 @@ data class InstalledApp (
     val name: String,
     val packageName: String,
     val icon: ImageBitmap?,
+    var screenTime: Long,
 )
 

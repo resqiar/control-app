@@ -1,41 +1,42 @@
 package com.example.parentcontrolapp.utils
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.core.graphics.drawable.toBitmap
 import com.example.parentcontrolapp.model.InstalledApp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> {
+suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.Default) {
     val packageManager = ctx.packageManager
     val apps = ArrayList<InstalledApp>()
+
     val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+    val usageApps = if (getUsageStatsPermission(ctx)) {
+        fetchAppScreenTime(ctx)
+    } else {
+        askUsageStatsPermission(ctx)
+        emptyList()
+    }
 
     for (app in installedApps) {
-        if (!isSystem(app)) {
-            val label = packageManager.getApplicationLabel(app).toString()
+        val label = packageManager.getApplicationLabel(app).toString()
+
+        if (!isSystem(label, app)) {
             val icon = convertToBitmap(packageManager.getApplicationIcon(app.packageName))
+            val usage = usageApps.find {
+                it.packageName == app.packageName
+            }
 
             apps.add(
                 InstalledApp(
                     name = label,
                     packageName = app.packageName,
                     icon = icon,
+                    screenTime = usage?.foreGroundTime ?: 0,
                 )
             )
         }
     }
 
-    return apps
-}
-
-private fun isSystem(app: ApplicationInfo): Boolean {
-    return app.flags and ApplicationInfo.FLAG_SYSTEM != 0
-}
-
-private fun convertToBitmap(icon: Drawable): ImageBitmap {
-    return icon.toBitmap().asImageBitmap()
+    return@withContext apps
 }
