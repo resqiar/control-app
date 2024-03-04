@@ -28,3 +28,10 @@ fun isSystemByPackageName(ctx: Context, packageName: String): Boolean {
 fun convertToBitmap(icon: Drawable): ImageBitmap {
     return icon.toBitmap().asImageBitmap()
 }
+
+fun convertToHours(minutes: Long): Pair<Long, Long> {
+    val hour = minutes / 60
+    val min = minutes % 60
+    // wow even kotlin has some kind of tuples
+    return Pair(hour, min)
+}

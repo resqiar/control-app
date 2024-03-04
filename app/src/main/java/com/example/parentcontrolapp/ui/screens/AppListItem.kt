@@ -48,7 +48,7 @@ fun AppList(metadata: InstalledApp) {
                 fontSize = 13.sp,
             )
             Text(
-                text = "${metadata.screenTime.toString()} Minute(s)",
+                text = "${metadata.screenTime.first} Hours ${metadata.screenTime.second} Minutes",
                 fontSize = 12.sp,
             )
         }
@@ -58,5 +58,5 @@ fun AppList(metadata: InstalledApp) {
 @Preview
 @Composable
 fun AppListPreview() {
-    AppList(metadata = InstalledApp("Test", "test.test@com", null, 0))
+    AppList(metadata = InstalledApp("Test", "test.test@com", null, 0, screenTime = Pair(0, 0)))
 }

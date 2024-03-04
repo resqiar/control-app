@@ -1,6 +1,6 @@
 package com.example.parentcontrolapp.model
 
-data class AppUsage (
+data class AppUsage(
     val packageName: String,
     val foreGroundTime: Long,
 )

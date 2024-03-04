@@ -26,13 +26,15 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
             val usage = usageApps.find {
                 it.packageName == app.packageName
             }
+            val time = convertToHours(usage?.foreGroundTime ?: 0)
 
             apps.add(
                 InstalledApp(
                     name = label,
                     packageName = app.packageName,
                     icon = icon,
-                    screenTime = usage?.foreGroundTime ?: 0,
+                    rawTime = usage?.foreGroundTime ?: 0,
+                    screenTime = time,
                 )
             )
         }
@@ -40,7 +42,7 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
 
     // sort the apps data based on screen time
     apps = ArrayList(apps.sortedByDescending {
-        it.screenTime
+        it.rawTime
     })
 
     return@withContext apps
