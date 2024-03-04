@@ -1,7 +1,9 @@
 package com.example.parentcontrolapp.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import com.example.parentcontrolapp.PermissionActivity
 import com.example.parentcontrolapp.model.InstalledApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,12 +13,16 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
     var apps = ArrayList<InstalledApp>()
 
     val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-    val usageApps = if (getUsageStatsPermission(ctx)) {
-        fetchAppScreenTime(ctx)
-    } else {
-        askUsageStatsPermission(ctx)
-        emptyList()
+
+    withContext(Dispatchers.Main) {
+        if (!getUsageStatsPermission(ctx)) {
+            val intent = Intent(ctx, PermissionActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            ctx.startActivity(intent)
+        }
     }
+
+    val usageApps = fetchAppScreenTime(ctx)
 
     for (app in installedApps) {
         val label = packageManager.getApplicationLabel(app).toString()
