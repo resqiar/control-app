@@ -17,9 +17,7 @@ import com.example.parentcontrolapp.ui.theme.ParentControlAppTheme
 import com.example.parentcontrolapp.utils.getInstalledApps
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Thread.State
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
