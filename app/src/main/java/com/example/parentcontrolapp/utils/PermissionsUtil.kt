@@ -3,9 +3,7 @@ package com.example.parentcontrolapp.utils
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
-import androidx.annotation.RequiresApi
 
 fun getUsageStatsPermission(ctx: Context): Boolean {
     val appOps = ctx.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
