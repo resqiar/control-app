@@ -2,13 +2,14 @@ package com.example.parentcontrolapp.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import com.example.parentcontrolapp.model.InstalledApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.Default) {
     val packageManager = ctx.packageManager
-    val apps = ArrayList<InstalledApp>()
+    var apps = ArrayList<InstalledApp>()
 
     val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
     val usageApps = if (getUsageStatsPermission(ctx)) {
@@ -37,6 +38,11 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
             )
         }
     }
+
+    // sort the apps data based on screen time
+    apps = ArrayList(apps.sortedByDescending {
+        it.screenTime
+    })
 
     return@withContext apps
 }
