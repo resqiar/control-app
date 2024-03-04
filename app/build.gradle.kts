@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.parentcontrolapp"
-        minSdk = 24
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -68,4 +68,6 @@ dependencies {
 
     // splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
 }
