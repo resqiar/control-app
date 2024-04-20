@@ -1,5 +1,6 @@
 package com.example.parentcontrolapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,15 +34,18 @@ fun MinimalDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+
     Dialog(
         onDismissRequest = onDismiss
     ) {
         Card(
            modifier = Modifier
                .fillMaxWidth()
-               .height(400.dp)
+               .height(600.dp)
                .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
+
+
         ) {
             Column(
                 modifier = Modifier
@@ -63,13 +67,14 @@ fun MinimalDialog(
                 Row(
                     modifier = Modifier.padding(vertical = 4.dp).fillMaxHeight().fillMaxWidth(),
                     verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     TextButton(
                         modifier = Modifier
-                            .padding(0.dp)
-                            .size(width = 50.dp, height = 30.dp),
+                            .padding(horizontal = 10.dp)
+                            .size(width = 60.dp, height = 30.dp),
                         onClick = onDismiss,
+
                     ) {
                         Text(
                             text = cancelText,
@@ -83,6 +88,7 @@ fun MinimalDialog(
                     ) {
                         Text(
                             text = confirmText,
+
                             fontSize = 10.sp
                         )
                     }

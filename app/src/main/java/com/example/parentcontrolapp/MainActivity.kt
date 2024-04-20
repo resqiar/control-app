@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.compose.AppTheme
 import com.example.parentcontrolapp.ui.screens.InstalledAppsList
-import com.example.parentcontrolapp.ui.theme.ParentControlAppTheme
 import com.example.parentcontrolapp.viewModel.MainViewModel
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 ArrayList(emptyList())
             )
 
-            ParentControlAppTheme {
+            AppTheme {
                 Column(
                     modifier = Modifier.padding(horizontal = 8.dp),
                 ) {
