@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +23,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -156,7 +156,7 @@ fun NavDrawer() {
             Scaffold(
                 topBar = {
                     val coroutineScope = rememberCoroutineScope()
-                    TopAppBar(title = { Text(text = "SenDigi") },
+                    CenterAlignedTopAppBar(title = { Text(text = "SenDigi") },
                         navigationIcon = {
                             IconButton(onClick = {
                                 coroutineScope.launch {
