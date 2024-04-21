@@ -22,54 +22,64 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.compose.AppTheme
 import com.example.parentcontrolapp.model.InstalledApp
 
 @Composable
 fun AppList(metadata: InstalledApp) {
-
-    Card(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
-        .fillMaxWidth(),
-        shape = RoundedCornerShape(corner = CornerSize(16.dp))
-        )
-    {
-        Row(
+    AppTheme {
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            metadata.icon?.let { icon ->
-                Image(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(corner = CornerSize(16.dp))),
-
-                    painter = BitmapPainter(icon),
-                    contentDescription = null,
-                )
-            }
-
-            Column(
-                modifier = Modifier.padding(16.dp).fillMaxWidth().align(Alignment.CenterVertically)
+                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(corner = CornerSize(16.dp))
+        )
+        {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = metadata.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                )
-                Text(
-                    text = metadata.packageName,
-                    fontSize = 13.sp,
-                )
-                Text(
-                    text = "${metadata.screenTime.first} Hours ${metadata.screenTime.second} Minutes",
-                    fontSize = 12.sp,
-                )
+                metadata.icon?.let { icon ->
+                    Image(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(corner = CornerSize(16.dp))),
+
+                        painter = BitmapPainter(icon),
+                        contentDescription = null,
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = metadata.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                    Text(
+                        text = metadata.packageName,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                    Text(
+                        text = "${metadata.screenTime.first} Hours ${metadata.screenTime.second} Minutes",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
         }
     }
+
 
 }
 
