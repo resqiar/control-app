@@ -2,9 +2,11 @@ package com.example.parentcontrolapp
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.ExitToApp
@@ -13,11 +15,11 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -27,12 +29,13 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.compose.AppTheme
+import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.ui.screens.AppLockSchedulerScreen
 import com.example.parentcontrolapp.ui.screens.AppLockScreen
 import com.example.parentcontrolapp.ui.screens.AppUsageScreen
@@ -54,18 +57,22 @@ fun NavDrawer() {
             drawerState = drawerState,
             gesturesEnabled = true,
             drawerContent = {
-                ModalDrawerSheet {
+                ModalDrawerSheet(
+                    drawerShape = MaterialTheme.shapes.small,
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
+                            .height(25.dp)
                     ) {
                         Text(text = "")
                     }
-                    Divider()
+
                     NavigationDrawerItem(
-                        label = { Text(text = "Home") },
+                        label = { Text(text = "Home",) },
                         selected = false,
+                        modifier = Modifier.padding(9.dp),
+
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Home,
@@ -83,6 +90,7 @@ fun NavDrawer() {
                     NavigationDrawerItem(
                         label = { Text(text = "Apps Usage Stats") },
                         selected = false,
+                        modifier = Modifier.padding(9.dp),
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Info,
@@ -101,6 +109,7 @@ fun NavDrawer() {
                     NavigationDrawerItem(
                         label = { Text(text = "Lock App") },
                         selected = false,
+                        modifier = Modifier.padding(9.dp),
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -119,6 +128,7 @@ fun NavDrawer() {
                     NavigationDrawerItem(
                         label = { Text(text = "App Lock Scheduler") },
                         selected = false,
+                        modifier = Modifier.padding(9.dp),
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.DateRange,
@@ -137,6 +147,7 @@ fun NavDrawer() {
                     NavigationDrawerItem(
                         label = { Text(text = "Logout") },
                         selected = false,
+                        modifier = Modifier.padding(9.dp),
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.ExitToApp,
@@ -155,6 +166,7 @@ fun NavDrawer() {
         ) {
             Scaffold(
                 topBar = {
+
                     val coroutineScope = rememberCoroutineScope()
                     CenterAlignedTopAppBar(title = { Text(text = "SenDigi") },
                         navigationIcon = {

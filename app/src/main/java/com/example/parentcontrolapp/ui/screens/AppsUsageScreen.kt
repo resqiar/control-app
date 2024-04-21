@@ -1,6 +1,6 @@
 package com.example.parentcontrolapp.ui.screens
 import androidx.compose.runtime.Composable
-import com.example.compose.AppTheme
+import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.viewModel.MainViewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface

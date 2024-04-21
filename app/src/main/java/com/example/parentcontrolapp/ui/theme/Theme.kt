@@ -1,4 +1,4 @@
-package com.example.compose
+package com.example.parentcontrolapp.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -7,7 +7,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.SideEffect
@@ -16,15 +15,176 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.compose.backgroundDark
+import com.example.compose.backgroundDarkHighContrast
+import com.example.compose.backgroundDarkMediumContrast
+import com.example.compose.backgroundLight
+import com.example.compose.backgroundLightHighContrast
+import com.example.compose.backgroundLightMediumContrast
+import com.example.compose.errorContainerDark
+import com.example.compose.errorContainerDarkHighContrast
+import com.example.compose.errorContainerDarkMediumContrast
+import com.example.compose.errorContainerLight
+import com.example.compose.errorContainerLightHighContrast
+import com.example.compose.errorContainerLightMediumContrast
+import com.example.compose.errorDark
+import com.example.compose.errorDarkHighContrast
+import com.example.compose.errorDarkMediumContrast
+import com.example.compose.errorLight
+import com.example.compose.errorLightHighContrast
+import com.example.compose.errorLightMediumContrast
+import com.example.compose.inverseOnSurfaceDark
+import com.example.compose.inverseOnSurfaceDarkHighContrast
+import com.example.compose.inverseOnSurfaceDarkMediumContrast
+import com.example.compose.inverseOnSurfaceLight
+import com.example.compose.inverseOnSurfaceLightHighContrast
+import com.example.compose.inverseOnSurfaceLightMediumContrast
+import com.example.compose.inversePrimaryDark
+import com.example.compose.inversePrimaryDarkHighContrast
+import com.example.compose.inversePrimaryDarkMediumContrast
+import com.example.compose.inversePrimaryLight
+import com.example.compose.inversePrimaryLightHighContrast
+import com.example.compose.inversePrimaryLightMediumContrast
+import com.example.compose.inverseSurfaceDark
+import com.example.compose.inverseSurfaceDarkHighContrast
+import com.example.compose.inverseSurfaceDarkMediumContrast
+import com.example.compose.inverseSurfaceLight
+import com.example.compose.inverseSurfaceLightHighContrast
+import com.example.compose.inverseSurfaceLightMediumContrast
+import com.example.compose.onBackgroundDark
+import com.example.compose.onBackgroundDarkHighContrast
+import com.example.compose.onBackgroundDarkMediumContrast
+import com.example.compose.onBackgroundLight
+import com.example.compose.onBackgroundLightHighContrast
+import com.example.compose.onBackgroundLightMediumContrast
+import com.example.compose.onErrorContainerDark
+import com.example.compose.onErrorContainerDarkHighContrast
+import com.example.compose.onErrorContainerDarkMediumContrast
+import com.example.compose.onErrorContainerLight
+import com.example.compose.onErrorContainerLightHighContrast
+import com.example.compose.onErrorContainerLightMediumContrast
+import com.example.compose.onErrorDark
+import com.example.compose.onErrorDarkHighContrast
+import com.example.compose.onErrorDarkMediumContrast
+import com.example.compose.onErrorLight
+import com.example.compose.onErrorLightHighContrast
+import com.example.compose.onErrorLightMediumContrast
+import com.example.compose.onPrimaryContainerDark
+import com.example.compose.onPrimaryContainerDarkHighContrast
+import com.example.compose.onPrimaryContainerDarkMediumContrast
+import com.example.compose.onPrimaryContainerLight
+import com.example.compose.onPrimaryContainerLightHighContrast
+import com.example.compose.onPrimaryContainerLightMediumContrast
+import com.example.compose.onPrimaryDark
+import com.example.compose.onPrimaryDarkHighContrast
+import com.example.compose.onPrimaryDarkMediumContrast
+import com.example.compose.onPrimaryLight
+import com.example.compose.onPrimaryLightHighContrast
+import com.example.compose.onPrimaryLightMediumContrast
+import com.example.compose.onSecondaryContainerDark
+import com.example.compose.onSecondaryContainerDarkHighContrast
+import com.example.compose.onSecondaryContainerDarkMediumContrast
+import com.example.compose.onSecondaryContainerLight
+import com.example.compose.onSecondaryContainerLightHighContrast
+import com.example.compose.onSecondaryContainerLightMediumContrast
+import com.example.compose.onSecondaryDark
+import com.example.compose.onSecondaryDarkHighContrast
+import com.example.compose.onSecondaryDarkMediumContrast
+import com.example.compose.onSecondaryLight
+import com.example.compose.onSecondaryLightHighContrast
+import com.example.compose.onSecondaryLightMediumContrast
+import com.example.compose.onSurfaceDark
+import com.example.compose.onSurfaceDarkHighContrast
+import com.example.compose.onSurfaceDarkMediumContrast
+import com.example.compose.onSurfaceLight
+import com.example.compose.onSurfaceLightHighContrast
+import com.example.compose.onSurfaceLightMediumContrast
+import com.example.compose.onSurfaceVariantDark
+import com.example.compose.onSurfaceVariantDarkHighContrast
+import com.example.compose.onSurfaceVariantDarkMediumContrast
+import com.example.compose.onSurfaceVariantLight
+import com.example.compose.onSurfaceVariantLightHighContrast
+import com.example.compose.onSurfaceVariantLightMediumContrast
+import com.example.compose.onTertiaryContainerDark
+import com.example.compose.onTertiaryContainerDarkHighContrast
+import com.example.compose.onTertiaryContainerDarkMediumContrast
+import com.example.compose.onTertiaryContainerLight
+import com.example.compose.onTertiaryContainerLightHighContrast
+import com.example.compose.onTertiaryContainerLightMediumContrast
+import com.example.compose.onTertiaryDark
+import com.example.compose.onTertiaryDarkHighContrast
+import com.example.compose.onTertiaryDarkMediumContrast
+import com.example.compose.onTertiaryLight
+import com.example.compose.onTertiaryLightHighContrast
+import com.example.compose.onTertiaryLightMediumContrast
+import com.example.compose.outlineDark
+import com.example.compose.outlineDarkHighContrast
+import com.example.compose.outlineDarkMediumContrast
+import com.example.compose.outlineLight
+import com.example.compose.outlineLightHighContrast
+import com.example.compose.outlineLightMediumContrast
+import com.example.compose.outlineVariantDark
+import com.example.compose.outlineVariantDarkHighContrast
+import com.example.compose.outlineVariantDarkMediumContrast
+import com.example.compose.outlineVariantLight
+import com.example.compose.outlineVariantLightHighContrast
+import com.example.compose.outlineVariantLightMediumContrast
+import com.example.compose.primaryContainerDark
+import com.example.compose.primaryContainerDarkHighContrast
+import com.example.compose.primaryContainerDarkMediumContrast
+import com.example.compose.primaryContainerLight
+import com.example.compose.primaryContainerLightHighContrast
+import com.example.compose.primaryContainerLightMediumContrast
+import com.example.compose.primaryDark
+import com.example.compose.primaryDarkHighContrast
+import com.example.compose.primaryDarkMediumContrast
+import com.example.compose.primaryLight
+import com.example.compose.primaryLightHighContrast
+import com.example.compose.primaryLightMediumContrast
+import com.example.compose.scrimDark
+import com.example.compose.scrimDarkHighContrast
+import com.example.compose.scrimDarkMediumContrast
+import com.example.compose.scrimLight
+import com.example.compose.scrimLightHighContrast
+import com.example.compose.scrimLightMediumContrast
+import com.example.compose.secondaryContainerDark
+import com.example.compose.secondaryContainerDarkHighContrast
+import com.example.compose.secondaryContainerDarkMediumContrast
+import com.example.compose.secondaryContainerLight
+import com.example.compose.secondaryContainerLightHighContrast
+import com.example.compose.secondaryContainerLightMediumContrast
+import com.example.compose.secondaryDark
+import com.example.compose.secondaryDarkHighContrast
+import com.example.compose.secondaryDarkMediumContrast
+import com.example.compose.secondaryLight
+import com.example.compose.secondaryLightHighContrast
+import com.example.compose.secondaryLightMediumContrast
+import com.example.compose.surfaceDark
+import com.example.compose.surfaceDarkHighContrast
+import com.example.compose.surfaceDarkMediumContrast
+import com.example.compose.surfaceLight
+import com.example.compose.surfaceLightHighContrast
+import com.example.compose.surfaceLightMediumContrast
+import com.example.compose.surfaceTint
+import com.example.compose.surfaceVariantDark
+import com.example.compose.surfaceVariantDarkHighContrast
+import com.example.compose.surfaceVariantDarkMediumContrast
+import com.example.compose.surfaceVariantLight
+import com.example.compose.surfaceVariantLightHighContrast
+import com.example.compose.surfaceVariantLightMediumContrast
+import com.example.compose.tertiaryContainerDark
+import com.example.compose.tertiaryContainerDarkHighContrast
+import com.example.compose.tertiaryContainerDarkMediumContrast
+import com.example.compose.tertiaryContainerLight
+import com.example.compose.tertiaryContainerLightHighContrast
+import com.example.compose.tertiaryContainerLightMediumContrast
+import com.example.compose.tertiaryDark
+import com.example.compose.tertiaryDarkHighContrast
+import com.example.compose.tertiaryDarkMediumContrast
+import com.example.compose.tertiaryLight
+import com.example.compose.tertiaryLightHighContrast
+import com.example.compose.tertiaryLightMediumContrast
 import com.example.ui.theme.AppTypography
-
-@Immutable
-data class ExtendedColorScheme(
-    val customColor1: ColorFamily,
-    val customColor2: ColorFamily,
-    val customColor3: ColorFamily,
-    val customColor4: ColorFamily,
-)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -55,7 +215,7 @@ private val lightScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLight,
     inverseOnSurface = inverseOnSurfaceLight,
     inversePrimary = inversePrimaryLight,
-
+    surfaceTint = surfaceTint
 )
 
 private val darkScheme = darkColorScheme(
@@ -87,7 +247,6 @@ private val darkScheme = darkColorScheme(
     inverseSurface = inverseSurfaceDark,
     inverseOnSurface = inverseOnSurfaceDark,
     inversePrimary = inversePrimaryDark,
-
 )
 
 private val mediumContrastLightColorScheme = lightColorScheme(
@@ -119,7 +278,6 @@ private val mediumContrastLightColorScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLightMediumContrast,
     inverseOnSurface = inverseOnSurfaceLightMediumContrast,
     inversePrimary = inversePrimaryLightMediumContrast,
-
 )
 
 private val highContrastLightColorScheme = lightColorScheme(
@@ -151,7 +309,6 @@ private val highContrastLightColorScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLightHighContrast,
     inverseOnSurface = inverseOnSurfaceLightHighContrast,
     inversePrimary = inversePrimaryLightHighContrast,
-
 )
 
 private val mediumContrastDarkColorScheme = darkColorScheme(
@@ -214,168 +371,7 @@ private val highContrastDarkColorScheme = darkColorScheme(
     inverseSurface = inverseSurfaceDarkHighContrast,
     inverseOnSurface = inverseOnSurfaceDarkHighContrast,
     inversePrimary = inversePrimaryDarkHighContrast,
-)
 
-val extendedLight = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1Light,
-  onCustomColor1Light,
-  customColor1ContainerLight,
-  onCustomColor1ContainerLight,
-  ),
-  customColor2 = ColorFamily(
-  customColor2Light,
-  onCustomColor2Light,
-  customColor2ContainerLight,
-  onCustomColor2ContainerLight,
-  ),
-  customColor3 = ColorFamily(
-  customColor3Light,
-  onCustomColor3Light,
-  customColor3ContainerLight,
-  onCustomColor3ContainerLight,
-  ),
-  customColor4 = ColorFamily(
-  customColor4Light,
-  onCustomColor4Light,
-  customColor4ContainerLight,
-  onCustomColor4ContainerLight,
-  ),
-)
-
-val extendedDark = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1Dark,
-  onCustomColor1Dark,
-  customColor1ContainerDark,
-  onCustomColor1ContainerDark,
-  ),
-  customColor2 = ColorFamily(
-  customColor2Dark,
-  onCustomColor2Dark,
-  customColor2ContainerDark,
-  onCustomColor2ContainerDark,
-  ),
-  customColor3 = ColorFamily(
-  customColor3Dark,
-  onCustomColor3Dark,
-  customColor3ContainerDark,
-  onCustomColor3ContainerDark,
-  ),
-  customColor4 = ColorFamily(
-  customColor4Dark,
-  onCustomColor4Dark,
-  customColor4ContainerDark,
-  onCustomColor4ContainerDark,
-  ),
-)
-
-val extendedLightMediumContrast = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1LightMediumContrast,
-  onCustomColor1LightMediumContrast,
-  customColor1ContainerLightMediumContrast,
-  onCustomColor1ContainerLightMediumContrast,
-  ),
-  customColor2 = ColorFamily(
-  customColor2LightMediumContrast,
-  onCustomColor2LightMediumContrast,
-  customColor2ContainerLightMediumContrast,
-  onCustomColor2ContainerLightMediumContrast,
-  ),
-  customColor3 = ColorFamily(
-  customColor3LightMediumContrast,
-  onCustomColor3LightMediumContrast,
-  customColor3ContainerLightMediumContrast,
-  onCustomColor3ContainerLightMediumContrast,
-  ),
-  customColor4 = ColorFamily(
-  customColor4LightMediumContrast,
-  onCustomColor4LightMediumContrast,
-  customColor4ContainerLightMediumContrast,
-  onCustomColor4ContainerLightMediumContrast,
-  ),
-)
-
-val extendedLightHighContrast = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1LightHighContrast,
-  onCustomColor1LightHighContrast,
-  customColor1ContainerLightHighContrast,
-  onCustomColor1ContainerLightHighContrast,
-  ),
-  customColor2 = ColorFamily(
-  customColor2LightHighContrast,
-  onCustomColor2LightHighContrast,
-  customColor2ContainerLightHighContrast,
-  onCustomColor2ContainerLightHighContrast,
-  ),
-  customColor3 = ColorFamily(
-  customColor3LightHighContrast,
-  onCustomColor3LightHighContrast,
-  customColor3ContainerLightHighContrast,
-  onCustomColor3ContainerLightHighContrast,
-  ),
-  customColor4 = ColorFamily(
-  customColor4LightHighContrast,
-  onCustomColor4LightHighContrast,
-  customColor4ContainerLightHighContrast,
-  onCustomColor4ContainerLightHighContrast,
-  ),
-)
-
-val extendedDarkMediumContrast = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1DarkMediumContrast,
-  onCustomColor1DarkMediumContrast,
-  customColor1ContainerDarkMediumContrast,
-  onCustomColor1ContainerDarkMediumContrast,
-  ),
-  customColor2 = ColorFamily(
-  customColor2DarkMediumContrast,
-  onCustomColor2DarkMediumContrast,
-  customColor2ContainerDarkMediumContrast,
-  onCustomColor2ContainerDarkMediumContrast,
-  ),
-  customColor3 = ColorFamily(
-  customColor3DarkMediumContrast,
-  onCustomColor3DarkMediumContrast,
-  customColor3ContainerDarkMediumContrast,
-  onCustomColor3ContainerDarkMediumContrast,
-  ),
-  customColor4 = ColorFamily(
-  customColor4DarkMediumContrast,
-  onCustomColor4DarkMediumContrast,
-  customColor4ContainerDarkMediumContrast,
-  onCustomColor4ContainerDarkMediumContrast,
-  ),
-)
-
-val extendedDarkHighContrast = ExtendedColorScheme(
-  customColor1 = ColorFamily(
-  customColor1DarkHighContrast,
-  onCustomColor1DarkHighContrast,
-  customColor1ContainerDarkHighContrast,
-  onCustomColor1ContainerDarkHighContrast,
-  ),
-  customColor2 = ColorFamily(
-  customColor2DarkHighContrast,
-  onCustomColor2DarkHighContrast,
-  customColor2ContainerDarkHighContrast,
-  onCustomColor2ContainerDarkHighContrast,
-  ),
-  customColor3 = ColorFamily(
-  customColor3DarkHighContrast,
-  onCustomColor3DarkHighContrast,
-  customColor3ContainerDarkHighContrast,
-  onCustomColor3ContainerDarkHighContrast,
-  ),
-  customColor4 = ColorFamily(
-  customColor4DarkHighContrast,
-  onCustomColor4DarkHighContrast,
-  customColor4ContainerDarkHighContrast,
-  onCustomColor4ContainerDarkHighContrast,
-  ),
 )
 
 @Immutable

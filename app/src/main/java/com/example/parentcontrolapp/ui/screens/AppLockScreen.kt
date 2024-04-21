@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.example.compose.AppTheme
+import com.example.parentcontrolapp.ui.theme.AppTheme
 
 @Composable
 fun AppLockScreen() {

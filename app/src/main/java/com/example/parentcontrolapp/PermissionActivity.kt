@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.compose.AppTheme
+import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.ui.screens.MinimalDialog
 import com.example.parentcontrolapp.utils.askUsageStatsPermission
 import com.example.parentcontrolapp.utils.getUsageStatsPermission

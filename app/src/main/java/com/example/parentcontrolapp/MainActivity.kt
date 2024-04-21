@@ -9,7 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.compose.AppTheme
+import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.viewModel.MainViewModel
 
 
