@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -117,6 +118,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .padding(NavigationDrawerItemDefaults.ItemPadding)
                                     )
+                                    Divider(modifier = Modifier.padding(2.dp))
                                 }
                             }
                         },
