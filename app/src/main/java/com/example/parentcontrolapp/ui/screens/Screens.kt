@@ -5,4 +5,6 @@ sealed class Screens(val screens: String) {
     data object AppsUsage: Screens("AppsUsage")
     data object AppLock: Screens("AppLock")
     data object AppLockScheduler: Screens("AppLockScheduler")
+
+    data object Splash: Screens("Splash")
 }
