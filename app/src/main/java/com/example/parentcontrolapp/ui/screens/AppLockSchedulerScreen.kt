@@ -20,7 +20,7 @@ fun AppLockSchedulerScreen() {
                 .align(Alignment.Center),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Home", fontSize = 36.sp,)
+                Text(text = "App Lock Scheduler", fontSize = 36.sp,)
             }
         }
     }

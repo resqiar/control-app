@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,6 +59,7 @@ fun AppList(metadata: InstalledApp) {
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
+                        color = MaterialTheme.colorScheme.primary,
                         text = metadata.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = 17.sp,
@@ -71,7 +73,7 @@ fun AppList(metadata: InstalledApp) {
                     Text(
                         text = "${metadata.screenTime.first} Hours ${metadata.screenTime.second} Minutes",
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(4.dp)
+                        modifier = Modifier.padding(top = 6.dp).padding(horizontal = 4.dp)
                     )
                 }
             }

@@ -184,7 +184,7 @@ fun NavDrawer() {
                     navController = navigationController,
                     startDestination = Screens.Home.screens
                 ) {
-                    composable(Screens.Home.screens) { HomeScreen() }
+                    composable(Screens.Home.screens) { HomeScreen(navController = navigationController) }
                     composable(Screens.AppsUsage.screens) { AppUsageScreen() }
                     composable(Screens.AppLock.screens) { AppLockScreen() }
                     composable(Screens.AppLockScheduler.screens) { AppLockSchedulerScreen() }
