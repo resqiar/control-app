@@ -32,6 +32,10 @@
             android:exported="false"
             android:theme="@style/Theme.Design.Light.NoActionBar"/>
         <activity
+            android:name=".AccessibilityPermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Design.Light.NoActionBar"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ParentControlApp.Splash">

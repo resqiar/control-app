@@ -1,9 +1,11 @@
 package com.example.parentcontrolapp.utils
 
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
+import android.view.accessibility.AccessibilityManager
 
 fun getUsageStatsPermission(ctx: Context): Boolean {
     val appOps = ctx.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
@@ -13,4 +15,17 @@ fun getUsageStatsPermission(ctx: Context): Boolean {
 
 fun askUsageStatsPermission(ctx: Context) {
     ctx.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+}
+
+fun checkAccessibility(ctx: Context): Boolean {
+    val accessibilityManager =
+        ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val accessibilityService = accessibilityManager.getEnabledAccessibilityServiceList(
+        AccessibilityServiceInfo.FEEDBACK_ALL_MASK
+    )
+    return accessibilityService.any()
+}
+
+fun askAccessibilityPermission(ctx: Context) {
+    ctx.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
 }
