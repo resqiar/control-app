@@ -1,14 +1,42 @@
-import android.content.Context
-import android.util.Log
-import androidx.core.content.edit
-import androidx.lifecycle.ViewModel
+package com.example.parentcontrolapp.viewModel
 
-class AppLockViewModel : ViewModel() {
+import android.app.Application
+import android.content.Context
+import androidx.core.content.edit
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.parentcontrolapp.model.InstalledApp
+import com.example.parentcontrolapp.utils.getInstalledApps
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class AppLockViewModel(application: Application) : AndroidViewModel(application) {
     private val lockedAppsPrefKey = "locked_apps"
+
+    private val _installedApps = MutableLiveData<ArrayList<InstalledApp>>()
+    val installedApps: LiveData<ArrayList<InstalledApp>> get() = _installedApps
+    private fun setInstalledApps(apps: ArrayList<InstalledApp>) {
+        _installedApps.postValue(apps)
+    }
+
+    init {
+        init()
+    }
+
+    // Init function to get all installed apps inside lock app screen
+    private fun init() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val installedApps = getInstalledApps(
+                getApplication<Application>().applicationContext
+            )
+            setInstalledApps(installedApps)
+        }
+    }
 
     // Function to lock an app
     fun lockApp(context: Context, packageName: String) {
-        Log.d("AppLockViewModel", "Locking app: $packageName")
         context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE).edit {
             putBoolean(packageName, true) // Set the lock status of the app to true
         }
@@ -32,20 +60,4 @@ class AppLockViewModel : ViewModel() {
         val prefs = context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE)
         return prefs.all.filterValues { it == true }.keys.toList()
     }
-
-    fun getAllInstalledApps(context: Context): List<String> {
-        val packageManager = context.packageManager
-        val installedApps = mutableListOf<String>()
-
-        // Get a list of all installed packages
-        val packages = packageManager.getInstalledPackages(0)
-
-        // Iterate through the list of packages and add package names to the list
-        for (packageInfo in packages) {
-            installedApps.add(packageInfo.packageName)
-        }
-
-        return installedApps
-    }
-
 }
