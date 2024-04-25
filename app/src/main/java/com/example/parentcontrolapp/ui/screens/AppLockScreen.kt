@@ -82,9 +82,9 @@ fun InstalledAppsScreen(
                     apps.forEach { app ->
                         if (viewModel.isAppLocked(context, app.packageName) != app.packageName in lockedApps) {
                             if (app.packageName in lockedApps) {
-                                viewModel.lockApp(context, app.packageName)
+                                viewModel.lockApp(context, app.packageName, true)
                             } else {
-                                viewModel.unlockApp(context, app.packageName)
+                                viewModel.lockApp(context, app.packageName, false)
                             }
                         }
                     }
@@ -181,9 +181,9 @@ fun AppItem(
                     onCheckedChange = { isChecked ->
                         isAppLocked = isChecked
                         if (isChecked) {
-                            viewModel.lockApp(context, app.packageName)
+                            viewModel.lockApp(context, app.packageName, true)
                         } else {
-                            viewModel.unlockApp(context, app.packageName)
+                            viewModel.lockApp(context, app.packageName, false)
                         }
                     }
                 )

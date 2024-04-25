@@ -7,13 +7,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.model.InstalledApp
 import com.example.parentcontrolapp.utils.getInstalledApps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AppLockViewModel(application: Application) : AndroidViewModel(application) {
-    private val lockedAppsPrefKey = "locked_apps"
+    private val lockedAppsPrefKey = Constants.LOCKED_APPS_PREF
 
     private val _installedApps = MutableLiveData<ArrayList<InstalledApp>>()
     val installedApps: LiveData<ArrayList<InstalledApp>> get() = _installedApps
@@ -35,17 +36,10 @@ class AppLockViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // Function to lock an app
-    fun lockApp(context: Context, packageName: String) {
+    // Function to lock/unlock an app
+    fun lockApp(context: Context, packageName: String, status: Boolean) {
         context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE).edit {
-            putBoolean(packageName, true) // Set the lock status of the app to true
-        }
-    }
-
-    // Function to unlock an app
-    fun unlockApp(context: Context, packageName: String) {
-        context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE).edit {
-            putBoolean(packageName, false) // Set the lock status of the app to false
+            putBoolean(packageName, status)
         }
     }
 
