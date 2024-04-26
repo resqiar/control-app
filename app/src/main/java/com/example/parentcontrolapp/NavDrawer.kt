@@ -1,5 +1,6 @@
 package com.example.parentcontrolapp
 
+import SchedulingScreen
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import com.example.parentcontrolapp.ui.screens.AppLockSchedulerScreen
 import com.example.parentcontrolapp.ui.screens.AppLockScreen
 import com.example.parentcontrolapp.ui.screens.AppUsageScreen
 import com.example.parentcontrolapp.ui.screens.HomeScreen
+
 import com.example.parentcontrolapp.ui.screens.Screens
 import kotlinx.coroutines.launch
 
@@ -187,7 +189,16 @@ fun NavDrawer() {
                     composable(Screens.Home.screens) { HomeScreen(navController = navigationController) }
                     composable(Screens.AppsUsage.screens) { AppUsageScreen() }
                     composable(Screens.AppLock.screens) { AppLockScreen() }
-                    composable(Screens.AppLockScheduler.screens) { AppLockSchedulerScreen() }
+                    composable(Screens.AppLockScheduler.screens) { AppLockSchedulerScreen(navController = navigationController) }
+                    composable("scheduling/{packageName}/{appName}") { backStackEntry ->
+                        val packageName = backStackEntry.arguments?.getString("packageName")
+                        val appName = backStackEntry.arguments?.getString("appName")
+                        packageName?.let { nonNullPackageName ->
+                            appName?.let { nonNullAppName ->
+                                SchedulingScreen(navController = navigationController, packageName = nonNullPackageName, appName = nonNullAppName)
+                            }
+                        }
+                    }
                 }
             }
         }
