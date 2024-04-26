@@ -8,8 +8,13 @@ import com.example.parentcontrolapp.ui.screens.LockScreen
 class LockScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val receivedPkgName = intent.getStringExtra("PACKAGE_NAME")
+
         setContent {
-            LockScreen()
+            if (receivedPkgName != null) {
+                LockScreen(receivedPkgName)
+            }
         }
     }
 }

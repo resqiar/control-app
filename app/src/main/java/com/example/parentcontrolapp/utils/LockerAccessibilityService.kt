@@ -24,6 +24,7 @@ class LockerAccessibilityService : AccessibilityService() {
 
         if (isLocked) {
             val intent = Intent(this, LockScreenActivity::class.java)
+            intent.putExtra("PACKAGE_NAME", packageName)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
