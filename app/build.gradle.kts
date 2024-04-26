@@ -79,4 +79,14 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.3.0")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
+
+    // Material 3 Core
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+
+    // Material 3 Calendar
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
+
+    // Material 3 Clock
+    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.3.0")
+
 }

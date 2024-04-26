@@ -25,7 +25,7 @@ fun AppUsageScreen() {
         )
         val appBarHeight = 64.dp
         Surface(modifier = Modifier.padding(top = appBarHeight)) {
-            InstalledAppsList(apps = apps)
+            InstalledAppsUsageList(apps = apps)
         }
 
     }
