@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ParentControlApp</string>
+    <string name="accessibility_service_label">SenDigi</string>
+    <string name="accessibility_service_description">A service to be able to monitor applications</string>
 </resources>

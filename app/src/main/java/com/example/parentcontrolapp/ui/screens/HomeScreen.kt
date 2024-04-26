@@ -30,7 +30,6 @@ import com.example.parentcontrolapp.ui.theme.AppTheme
 
 @Composable
 fun HomeScreen(navController: NavController) {
-
     AppTheme {
         Box(modifier = Modifier
             .fillMaxSize()

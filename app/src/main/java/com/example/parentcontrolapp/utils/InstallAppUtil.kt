@@ -27,7 +27,7 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
     for (app in installedApps) {
         val label = packageManager.getApplicationLabel(app).toString()
 
-        if (!isSystem(label, app)) {
+        if (!isSystemByPackageName(ctx, app.packageName, app)) {
             val icon = convertToBitmap(packageManager.getApplicationIcon(app.packageName))
             val usage = usageApps.find {
                 it.packageName == app.packageName

@@ -1,8 +1,8 @@
 package com.example.parentcontrolapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,14 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,11 +41,8 @@ fun MinimalDialog(
         Card(
            modifier = Modifier
                .fillMaxWidth()
-               .height(600.dp)
-               .padding(16.dp),
+               .height(IntrinsicSize.Min),
             shape = RoundedCornerShape(16.dp),
-
-
         ) {
             Column(
                 modifier = Modifier
@@ -65,10 +59,16 @@ fun MinimalDialog(
 
                 Spacer(modifier = Modifier.padding(vertical = 8.dp))
 
-                Text(text = description)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = description
+                )
 
                 Row(
-                    modifier = Modifier.padding(vertical = 4.dp).fillMaxHeight().fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(top = 16.dp, bottom = 8.dp)
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center,
                 ) {
