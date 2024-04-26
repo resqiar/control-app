@@ -49,6 +49,7 @@
         <activity
             android:name=".LockScreenActivity"
             android:exported="true"
+            android:taskAffinity="com.example.sendigi.lockscreen"
             android:theme="@style/Theme.ParentControlApp"/>
 
         <service android:exported="true" android:name=".utils.LockerAccessibilityService"
