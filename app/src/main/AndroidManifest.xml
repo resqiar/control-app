@@ -9,6 +9,7 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <queries>
         <intent>
@@ -34,6 +35,10 @@
             android:theme="@style/Theme.Design.Light.NoActionBar"/>
         <activity
             android:name=".AccessibilityPermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Design.Light.NoActionBar"/>
+        <activity
+            android:name=".LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.Design.Light.NoActionBar"/>
         <activity

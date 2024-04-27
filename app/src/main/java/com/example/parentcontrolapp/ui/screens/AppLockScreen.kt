@@ -2,6 +2,7 @@ package com.example.parentcontrolapp.ui.screens
 
 import com.example.parentcontrolapp.viewModel.AppLockViewModel
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,11 +39,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.parentcontrolapp.AccessibilityPermissionActivity
 import com.example.parentcontrolapp.model.InstalledApp
 import com.example.parentcontrolapp.ui.theme.AppTheme
+import com.example.parentcontrolapp.utils.checkAccessibility
 
 @Composable
 fun AppLockScreen() {
+    val context = LocalContext.current
+
+    // check permissions for accessibility
+    if (!checkAccessibility(context)) {
+        val intent = Intent(context, AccessibilityPermissionActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    }
+
     AppTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier
