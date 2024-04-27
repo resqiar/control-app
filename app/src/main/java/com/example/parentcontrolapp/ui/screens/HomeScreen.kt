@@ -164,7 +164,7 @@ fun HomeScreen(navController: NavController) {
                                 fontSize = 14.sp
                             )
                             Button(onClick = {
-                                navController.navigate(Screens.AppLock.screens)
+                                navController.navigate(Screens.AppLockScheduler.screens)
                             }, Modifier.padding(4.dp),) {
                                 Icon(imageVector = Icons.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)

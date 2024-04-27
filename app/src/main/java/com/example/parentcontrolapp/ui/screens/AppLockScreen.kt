@@ -2,6 +2,7 @@ package com.example.parentcontrolapp.ui.screens
 
 import com.example.parentcontrolapp.viewModel.AppLockViewModel
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -101,7 +102,7 @@ fun AppList(
     viewModel: AppLockViewModel
 ) {
     LazyColumn(
-        modifier = Modifier.padding(top = 64.dp, bottom = 18.dp)
+        modifier = Modifier.padding(top = 64.dp)
     ) {
         items(installedApps) { app ->
             AppItem(app, viewModel)
@@ -122,11 +123,14 @@ fun AppItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(8.dp).padding(horizontal = 8.dp)
+
+
             .clickable {
                 // Toggle the checkbox state and update the UI
                 isAppLocked = !isAppLocked
             },
+        shape = RoundedCornerShape(22.dp),
     ) {
         Row(
             modifier = Modifier
@@ -136,7 +140,7 @@ fun AppItem(
         ) {
             Row(
                 modifier = Modifier
-                    .padding(4.dp),
+                    .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
@@ -157,7 +161,7 @@ fun AppItem(
 
                     Column(
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(8.dp)
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
@@ -181,8 +185,10 @@ fun AppItem(
                     onCheckedChange = { isChecked ->
                         isAppLocked = isChecked
                         if (isChecked) {
+                            Toast.makeText(context, "App Successfully Locked!", Toast.LENGTH_LONG).show()
                             viewModel.lockApp(context, app.packageName, true)
                         } else {
+                            Toast.makeText(context, "App Successfully Unlocked!", Toast.LENGTH_LONG).show()
                             viewModel.lockApp(context, app.packageName, false)
                         }
                     }
