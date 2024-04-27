@@ -2,6 +2,8 @@ package com.example.parentcontrolapp
 
 import SchedulingScreen
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.ui.screens.AppLockSchedulerScreen
 import com.example.parentcontrolapp.ui.screens.AppLockScreen
@@ -157,8 +160,20 @@ fun NavDrawer() {
                         onClick = {
                             coroutineScope.launch {
                                 drawerState.close()
+
+                                // delete token
+                                context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
+                                    .edit()
+                                    .remove(Constants.LOG_TOKEN_PREF)
+                                    .apply()
+
+                                // Go to Login Activity
+                                val intent = Intent(context, LoginActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
                             }
-                            Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                         })
 
                 }
