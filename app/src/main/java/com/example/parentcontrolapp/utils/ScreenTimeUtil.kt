@@ -11,6 +11,7 @@ suspend fun fetchAppScreenTime(ctx: Context): ArrayList<AppUsage> = withContext(
     val usageStatsManager = ctx.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     val calendar = Calendar.getInstance()
     val apps = ArrayList<AppUsage>()
+    val packageManager = ctx.packageManager
 
     // last 24 hours
     calendar.add(Calendar.DAY_OF_MONTH, -1)
@@ -23,7 +24,9 @@ suspend fun fetchAppScreenTime(ctx: Context): ArrayList<AppUsage> = withContext(
 
     if (stats != null && stats.isNotEmpty()) {
         for (app in stats) {
-            if (!isSystemByPackageName(ctx, app.packageName)) {
+            val metadata = packageManager.getApplicationInfo(app.packageName, 0)
+
+            if (!isSystemByPackageName(ctx, app.packageName, metadata)) {
                 val name = app.packageName
                 val totalTime = app.totalTimeInForeground / (60 * 1000)
 

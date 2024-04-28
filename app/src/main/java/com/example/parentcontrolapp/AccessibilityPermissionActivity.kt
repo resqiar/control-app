@@ -7,11 +7,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.ui.screens.MinimalDialog
-import com.example.parentcontrolapp.utils.askUsageStatsPermission
-import com.example.parentcontrolapp.utils.getUsageStatsPermission
+import com.example.parentcontrolapp.utils.askAccessibilityPermission
+import com.example.parentcontrolapp.utils.checkAccessibility
 import kotlin.system.exitProcess
 
-class PermissionActivity : ComponentActivity() {
+class AccessibilityPermissionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,15 +24,15 @@ class PermissionActivity : ComponentActivity() {
                     description = """
                         To use this app effectively, please grant the necessary permissions:
 
-                        Usage Stats Permission:
+                        Accessibility Permission:
 
                         1. Open your device settings.
-                        2. Navigate to 'Apps' or 'Application Manager.'
-                        3. Find and select 'Your App Name.'
-                        4. Tap 'Permissions.'
-                        5. Enable 'Usage Access' or 'Usage Stats.'
+                        2. Navigate to "Accessibility."
+                        3. Find and select "SenDigi"
+                        4. Tap "Enable Service."
+                        5. Toggle the switch for "SenDigi"
 
-                        Granting this permission allows us to provide you with valuable insights and features. Thank you for your cooperation!
+                        This permission is necessary to enable the locking feature effectively. 
                     """.trimIndent(),
                     cancelText = "Exit",
                     confirmText = "Go to Settings",
@@ -40,7 +40,7 @@ class PermissionActivity : ComponentActivity() {
                         finish()
                         exitProcess(0)
                     },
-                    onConfirm = { askUsageStatsPermission(this) },
+                    onConfirm = { askAccessibilityPermission(this) },
                 )
             }
 
@@ -59,7 +59,7 @@ class PermissionActivity : ComponentActivity() {
 }
 
 private fun checkIfPermitted(ctx: Context) {
-    if (getUsageStatsPermission(ctx)) {
+    if (checkAccessibility(ctx)) {
         val intent = Intent(ctx, MainActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ctx.startActivity(intent)

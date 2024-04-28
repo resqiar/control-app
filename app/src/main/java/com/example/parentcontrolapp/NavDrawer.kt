@@ -1,8 +1,10 @@
 package com.example.parentcontrolapp
 
+import SchedulingScreen
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,17 +31,18 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.ui.screens.AppLockSchedulerScreen
 import com.example.parentcontrolapp.ui.screens.AppLockScreen
 import com.example.parentcontrolapp.ui.screens.AppUsageScreen
 import com.example.parentcontrolapp.ui.screens.HomeScreen
+
 import com.example.parentcontrolapp.ui.screens.Screens
 import kotlinx.coroutines.launch
 
@@ -157,8 +160,20 @@ fun NavDrawer() {
                         onClick = {
                             coroutineScope.launch {
                                 drawerState.close()
+
+                                // delete token
+                                context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
+                                    .edit()
+                                    .remove(Constants.LOG_TOKEN_PREF)
+                                    .apply()
+
+                                // Go to Login Activity
+                                val intent = Intent(context, LoginActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
                             }
-                            Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                         })
 
                 }
@@ -166,8 +181,6 @@ fun NavDrawer() {
         ) {
             Scaffold(
                 topBar = {
-
-                    val coroutineScope = rememberCoroutineScope()
                     CenterAlignedTopAppBar(title = { Text(text = "SenDigi") },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -187,7 +200,16 @@ fun NavDrawer() {
                     composable(Screens.Home.screens) { HomeScreen(navController = navigationController) }
                     composable(Screens.AppsUsage.screens) { AppUsageScreen() }
                     composable(Screens.AppLock.screens) { AppLockScreen() }
-                    composable(Screens.AppLockScheduler.screens) { AppLockSchedulerScreen() }
+                    composable(Screens.AppLockScheduler.screens) { AppLockSchedulerScreen(navController = navigationController) }
+                    composable("scheduling/{packageName}/{appName}") { backStackEntry ->
+                        val packageName = backStackEntry.arguments?.getString("packageName")
+                        val appName = backStackEntry.arguments?.getString("appName")
+                        packageName?.let { nonNullPackageName ->
+                            appName?.let { nonNullAppName ->
+                                SchedulingScreen(navController = navigationController, packageName = nonNullPackageName, appName = nonNullAppName)
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -22,11 +22,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -50,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
@@ -78,5 +79,22 @@ dependencies {
     // Lottie
     implementation("com.airbnb.android:lottie-compose:6.3.0")
 
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
+
+    // Material 3 Core
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+
+    // Material 3 Calendar
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
+
+    // Material 3 Clock
+    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.3.0")
+
+    // Credentials Manager - manage authentication
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
