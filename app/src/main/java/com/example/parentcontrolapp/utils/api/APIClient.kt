@@ -1,5 +1,6 @@
 package com.example.parentcontrolapp.utils.api
 
+import com.example.parentcontrolapp.model.AppInfo
 import com.example.parentcontrolapp.model.DeviceInfo
 import com.example.parentcontrolapp.model.GooglePayload
 import com.google.gson.annotations.SerializedName
@@ -45,5 +46,11 @@ interface ApiService {
     fun syncDevice(
         @Header("Authorization") token: String,
         @Body() payload: DeviceInfo
+    ): Call<StatusResponse>
+
+    @POST("/mobile/sync-app")
+    fun syncApp(
+        @Header("Authorization") token: String,
+        @Body() payload: AppInfo
     ): Call<StatusResponse>
 }
