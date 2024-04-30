@@ -1,5 +1,6 @@
 package com.example.parentcontrolapp.utils.api
 
+import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.model.AppInfo
 import com.example.parentcontrolapp.model.DeviceInfo
 import com.example.parentcontrolapp.model.GooglePayload
@@ -12,11 +13,9 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8888"
-
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(Constants.HTTP_SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
