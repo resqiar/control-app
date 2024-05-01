@@ -93,11 +93,11 @@ fun InstalledAppsScreen(
 
                     // Apply changes
                     apps.forEach { app ->
-                        if (viewModel.isAppLocked(context, app.packageName) != app.packageName in lockedApps) {
+                        if (viewModel.getLockStatus(context, app.packageName) != app.packageName in lockedApps) {
                             if (app.packageName in lockedApps) {
-                                viewModel.lockApp(context, app.packageName, true)
+                                viewModel.lockApplication(context, app.packageName, true)
                             } else {
-                                viewModel.lockApp(context, app.packageName, false)
+                                viewModel.lockApplication(context, app.packageName, false)
                             }
                         }
                     }
@@ -129,7 +129,7 @@ fun AppItem(
 ) {
     val context = LocalContext.current
     var isAppLocked by remember {
-        mutableStateOf(viewModel.isAppLocked(context, app.packageName))
+        mutableStateOf(viewModel.getLockStatus(context, app.packageName))
     }
 
     Card(
@@ -198,10 +198,10 @@ fun AppItem(
                         isAppLocked = isChecked
                         if (isChecked) {
                             Toast.makeText(context, "App Successfully Locked!", Toast.LENGTH_LONG).show()
-                            viewModel.lockApp(context, app.packageName, true)
+                            viewModel.lockApplication(context, app.packageName, true)
                         } else {
                             Toast.makeText(context, "App Successfully Unlocked!", Toast.LENGTH_LONG).show()
-                            viewModel.lockApp(context, app.packageName, false)
+                            viewModel.lockApplication(context, app.packageName, false)
                         }
                     }
                 )

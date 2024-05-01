@@ -102,7 +102,7 @@ object BackgroundTaskUtil {
         if (token.isEmpty()) return
 
         withContext(Dispatchers.Default) {
-            val updatedApps = getInstalledApps(context)
+            val updatedApps = getDeviceInstalledApplication(context)
             Log.d("INSTALLED APP", updatedApps.toString())
 
             for (app in updatedApps) {

@@ -8,7 +8,7 @@ import com.example.parentcontrolapp.model.InstalledApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.Default) {
+suspend fun getDeviceInstalledApplication(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.Default) {
     val packageManager = ctx.packageManager
     var apps = ArrayList<InstalledApp>()
 
@@ -22,12 +22,12 @@ suspend fun getInstalledApps(ctx: Context): ArrayList<InstalledApp> = withContex
         }
     }
 
-    val usageApps = fetchAppScreenTime(ctx)
+    val usageApps = getAppIndividualUsage(ctx)
 
     for (app in installedApps) {
         val label = packageManager.getApplicationLabel(app).toString()
 
-        if (!isSystemByPackageName(ctx, app.packageName, app)) {
+        if (!excludeSystemApplication(ctx, app.packageName, app)) {
             val icon = convertToBitmap(packageManager.getApplicationIcon(app.packageName))
             val usage = usageApps.find {
                 it.packageName == app.packageName
