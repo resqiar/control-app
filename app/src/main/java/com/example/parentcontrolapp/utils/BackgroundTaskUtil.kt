@@ -3,18 +3,17 @@ package com.example.parentcontrolapp.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.BatteryManager
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.model.AppInfo
+import com.example.parentcontrolapp.model.ApplicationMetadata
 import com.example.parentcontrolapp.model.DeviceInfo
+import com.example.parentcontrolapp.model.InstalledApp
 import com.example.parentcontrolapp.utils.api.ApiClient
 import com.example.parentcontrolapp.utils.api.StatusResponse
 import kotlinx.coroutines.CoroutineScope
@@ -33,10 +32,12 @@ object BackgroundTaskUtil {
 
         val runnable = object : Runnable {
             override fun run() {
-                getAndSendMetadata(context)
+                getCurrentDeviceMetadata(context)
+
                 CoroutineScope(Dispatchers.Default).launch {
-                    getAndSendAppMetadata(context)
+                    sendApplicationDataWithDeviceData(context)
                 }
+
                 handler.postDelayed(this, delayMillis)
             }
         }
@@ -45,17 +46,8 @@ object BackgroundTaskUtil {
     }
 
     @SuppressLint("HardwareIds")
-    fun getAndSendMetadata(context: Context) {
-        val androidID = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-        val deviceName: String = Build.MODEL
-        val deviceBrand: String = Build.BRAND
-        val apiLevel: Int = Build.VERSION.SDK_INT
-        val androidVersion: String = Build.VERSION.RELEASE
-        val manufacturer: String = Build.MANUFACTURER
-        val productName: String = Build.PRODUCT
-        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-        val batteryLevel: Int = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-        val isCharging: Boolean = batteryManager.isCharging
+    fun getCurrentDeviceMetadata(context: Context) {
+        val metadata = GetDeviceMetadata(context)
 
         val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
             .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
@@ -66,15 +58,15 @@ object BackgroundTaskUtil {
         val call = ApiClient.apiService.syncDevice(
             token = token,
             DeviceInfo(
-                androidId = androidID,
-                deviceName = deviceName,
-                deviceBrand = deviceBrand,
-                apiLevel = apiLevel,
-                androidVersion = androidVersion,
-                manufacturer = manufacturer,
-                productName = productName,
-                batteryLevel = batteryLevel,
-                isCharging = isCharging,
+                androidId = metadata.androidId,
+                deviceName = metadata.deviceName,
+                deviceBrand = metadata.deviceBrand,
+                apiLevel = metadata.apiLevel,
+                androidVersion = metadata.androidVersion,
+                manufacturer = metadata.manufacturer,
+                productName = metadata.productName,
+                batteryLevel = metadata.batteryLevel,
+                isCharging = metadata.isCharging,
             )
         )
 
@@ -94,7 +86,9 @@ object BackgroundTaskUtil {
         })
     }
 
-    suspend fun getAndSendAppMetadata(context: Context) {
+    suspend fun sendApplicationDataWithDeviceData(context: Context) {
+        val metadata = GetDeviceMetadata(context)
+
         val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
             .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
 
@@ -102,28 +96,14 @@ object BackgroundTaskUtil {
         if (token.isEmpty()) return
 
         withContext(Dispatchers.Default) {
-            val updatedApps = getInstalledApps(context)
-            Log.d("INSTALLED APP", updatedApps.toString())
+            val updatedApps = getDeviceInstalledApplication(context)
 
             for (app in updatedApps) {
-                // get lock status for current app
-                val status = context.getSharedPreferences(
-                    Constants.LOCKED_APPS_PREF, Context.MODE_PRIVATE
-                ).getBoolean(app.packageName, false)
-
-                // convert bitmap icon to base64
-                val icon = bitmapToBase64(app.icon)
-                val appInfo = AppInfo(
-                    name = app.name,
-                    packageName = app.packageName,
-                    icon = icon,
-                    timeUsage = app.rawTime,
-                    lockStatus = status
-                )
+                val appMetadata = getApplicationMetadata(context, app, metadata)
 
                 val call = ApiClient.apiService.syncApp(
                     token = token,
-                    appInfo
+                    appMetadata.info
                 )
 
                 call.enqueue(object: Callback<StatusResponse> {
@@ -142,6 +122,34 @@ object BackgroundTaskUtil {
                 })
             }
         }
+    }
+
+    private fun getApplicationMetadata(
+        context: Context,
+        app: InstalledApp,
+        metadata: DeviceInfo
+    ): ApplicationMetadata {
+        // get lock status for current app
+        val status = context.getSharedPreferences(
+            Constants.LOCKED_APPS_PREF, Context.MODE_PRIVATE
+        ).getBoolean(app.packageName, false)
+
+        // convert bitmap icon to base64
+        val icon = bitmapToBase64(app.icon)
+        val appInfo = AppInfo(
+            name = app.name,
+            packageName = app.packageName,
+            icon = icon,
+            timeUsage = app.rawTime,
+            lockStatus = status,
+            androidId = metadata.androidId,
+        )
+
+        return ApplicationMetadata(
+            status,
+            icon,
+            appInfo
+        )
     }
 
     private fun bitmapToBase64(raw: ImageBitmap?): String {

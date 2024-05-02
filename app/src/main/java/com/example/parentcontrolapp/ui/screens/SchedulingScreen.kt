@@ -38,20 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.core.util.toRange
 import com.example.parentcontrolapp.ui.theme.AppTheme
-import com.maxkeppeker.sheets.core.models.base.UseCaseState
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SchedulingScreen(navController: NavController, packageName: String, appName: String) {
-
     AppTheme {
         val calendarState = rememberUseCaseState()
         CalendarDialog(
@@ -189,15 +183,7 @@ fun SchedulingScreen(navController: NavController, packageName: String, appName:
                     }
 
                 }
-
-
-
-
-
-
             }
         }
     }
-
-
 }
