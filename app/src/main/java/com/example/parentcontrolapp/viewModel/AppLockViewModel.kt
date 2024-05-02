@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.model.InstalledApp
-import com.example.parentcontrolapp.utils.getInstalledApps
+import com.example.parentcontrolapp.utils.getDeviceInstalledApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -29,7 +29,7 @@ class AppLockViewModel(application: Application) : AndroidViewModel(application)
     // Init function to get all installed apps inside lock app screen
     private fun init() {
         viewModelScope.launch(Dispatchers.Default) {
-            val installedApps = getInstalledApps(
+            val installedApps = getDeviceInstalledApplication(
                 getApplication<Application>().applicationContext
             )
             setInstalledApps(installedApps)
@@ -37,14 +37,14 @@ class AppLockViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // Function to lock/unlock an app
-    fun lockApp(context: Context, packageName: String, status: Boolean) {
+    fun lockApplication(context: Context, packageName: String, status: Boolean) {
         context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE).edit {
             putBoolean(packageName, status)
         }
     }
 
     // Function to check if an app is locked
-    fun isAppLocked(context: Context, packageName: String): Boolean {
+    fun getLockStatus(context: Context, packageName: String): Boolean {
         val prefs = context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE)
         return prefs.getBoolean(packageName, false) // Return true if the app is locked, false otherwise
     }

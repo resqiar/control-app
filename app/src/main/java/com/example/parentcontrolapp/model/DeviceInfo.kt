@@ -11,3 +11,9 @@ data class DeviceInfo(
     val batteryLevel: Int,
     val isCharging: Boolean,
 )
+
+data class ApplicationMetadata(
+    val status: Boolean,
+    val icon: String,
+    val info: AppInfo
+)

@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-suspend fun fetchAppScreenTime(ctx: Context): ArrayList<AppUsage> = withContext(Dispatchers.Default) {
+suspend fun getAppIndividualUsage(ctx: Context): ArrayList<AppUsage> = withContext(Dispatchers.Default) {
     val usageStatsManager = ctx.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     val calendar = Calendar.getInstance()
     val apps = ArrayList<AppUsage>()
@@ -26,7 +26,7 @@ suspend fun fetchAppScreenTime(ctx: Context): ArrayList<AppUsage> = withContext(
         for (app in stats) {
             val metadata = packageManager.getApplicationInfo(app.packageName, 0)
 
-            if (!isSystemByPackageName(ctx, app.packageName, metadata)) {
+            if (!excludeSystemApplication(ctx, app.packageName, metadata)) {
                 val name = app.packageName
                 val totalTime = app.totalTimeInForeground / (60 * 1000)
 

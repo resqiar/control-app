@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.drawable.toBitmap
 
-fun isSystemByPackageName(ctx: Context, packageName: String, appInfo: ApplicationInfo): Boolean {
+fun excludeSystemApplication(ctx: Context, packageName: String, appInfo: ApplicationInfo): Boolean {
     val metadata = ctx.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
     val label = ctx.packageManager.getApplicationLabel(metadata.applicationInfo).toString()
 

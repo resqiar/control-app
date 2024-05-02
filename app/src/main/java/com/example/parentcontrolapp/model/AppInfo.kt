@@ -6,4 +6,5 @@ data class AppInfo (
     val icon: String,
     val timeUsage: Long,
     val lockStatus: Boolean,
+    val androidId: String,
 )
