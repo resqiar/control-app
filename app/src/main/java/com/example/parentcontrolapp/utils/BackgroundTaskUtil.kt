@@ -9,7 +9,10 @@ import android.util.Base64
 import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
+import com.example.parentcontrolapp.ApplicationActivity
 import com.example.parentcontrolapp.constants.Constants
+import com.example.parentcontrolapp.dao.AppInfoDao
+import com.example.parentcontrolapp.entities.AppInfoEntity
 import com.example.parentcontrolapp.model.AppInfo
 import com.example.parentcontrolapp.model.ApplicationMetadata
 import com.example.parentcontrolapp.model.DeviceInfo
@@ -34,7 +37,7 @@ object BackgroundTaskUtil {
             override fun run() {
                 getCurrentDeviceMetadata(context)
 
-                CoroutineScope(Dispatchers.Default).launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     sendApplicationDataWithDeviceData(context)
                 }
 
@@ -89,17 +92,29 @@ object BackgroundTaskUtil {
     suspend fun sendApplicationDataWithDeviceData(context: Context) {
         val metadata = GetDeviceMetadata(context)
 
+        // get token from shared pref
         val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
             .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
 
         // if there is no token, skip
         if (token.isEmpty()) return
 
-        withContext(Dispatchers.Default) {
+        withContext(Dispatchers.IO) {
             val updatedApps = getDeviceInstalledApplication(context)
 
             for (app in updatedApps) {
-                val appMetadata = getApplicationMetadata(context, app, metadata)
+
+                // before sending to remote server, save the state to local database
+                val infoDao = ApplicationActivity.getInstance().appInfoDao()
+                val appMetadata = getApplicationMetadata(app, metadata, infoDao)
+                val exist = infoDao.getAppInfo(appMetadata.info.packageName)
+
+                // if the app package name is not yet created in the database
+                if (exist == null) {
+                    saveState(app, appMetadata, infoDao)
+                } else { // otherwise, just update as usual
+                    updateState(app, appMetadata, infoDao)
+                }
 
                 val call = ApiClient.apiService.syncApp(
                     token = token,
@@ -124,32 +139,68 @@ object BackgroundTaskUtil {
         }
     }
 
-    private fun getApplicationMetadata(
-        context: Context,
+    private suspend fun saveState(
         app: InstalledApp,
-        metadata: DeviceInfo
+        metadata: ApplicationMetadata,
+        infoDao: AppInfoDao
+    ) {
+        withContext(Dispatchers.IO) {
+            infoDao.createAppInfo(
+                AppInfoEntity(
+                    packageName = metadata.info.packageName,
+                    icon = bitmapToBase64(app.icon),
+                    timeUsage = app.rawTime,
+                    lockStatus = metadata.info.lockStatus,
+                    name = metadata.info.name
+                )
+            )
+        }
+    }
+
+    private suspend fun updateState(
+        app: InstalledApp,
+        metadata: ApplicationMetadata,
+        infoDao: AppInfoDao
+    ) {
+        withContext(Dispatchers.IO) {
+            infoDao.updateAppInfo(
+                AppInfoEntity(
+                    packageName = metadata.info.packageName,
+                    icon = bitmapToBase64(app.icon),
+                    timeUsage = app.rawTime,
+                    lockStatus = metadata.info.lockStatus,
+                    name = metadata.info.name
+                )
+            )
+        }
+    }
+
+    private suspend fun getApplicationMetadata(
+        app: InstalledApp,
+        metadata: DeviceInfo,
+        infoDao: AppInfoDao
     ): ApplicationMetadata {
-        // get lock status for current app
-        val status = context.getSharedPreferences(
-            Constants.LOCKED_APPS_PREF, Context.MODE_PRIVATE
-        ).getBoolean(app.packageName, false)
+        // get lock status for current app in local database
+        return withContext(Dispatchers.IO) {
+            val status = infoDao.getLockStatus(packageName = app.packageName)
 
-        // convert bitmap icon to base64
-        val icon = bitmapToBase64(app.icon)
-        val appInfo = AppInfo(
-            name = app.name,
-            packageName = app.packageName,
-            icon = icon,
-            timeUsage = app.rawTime,
-            lockStatus = status,
-            androidId = metadata.androidId,
-        )
+            // convert bitmap icon to base64
+            val icon = bitmapToBase64(app.icon)
+            val appInfo = AppInfo(
+                name = app.name,
+                packageName = app.packageName,
+                icon = icon,
+                timeUsage = app.rawTime,
+                lockStatus = status,
+                androidId = metadata.androidId,
+            )
 
-        return ApplicationMetadata(
-            status,
-            icon,
-            appInfo
-        )
+            ApplicationMetadata(
+                status,
+                icon,
+                appInfo
+            )
+        }
     }
 
     private fun bitmapToBase64(raw: ImageBitmap?): String {

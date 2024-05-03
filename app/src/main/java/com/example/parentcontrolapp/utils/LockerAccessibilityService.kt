@@ -2,31 +2,30 @@ package com.example.parentcontrolapp.utils
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.view.accessibility.AccessibilityEvent
+import com.example.parentcontrolapp.ApplicationActivity
 import com.example.parentcontrolapp.LockScreenActivity
-import com.example.parentcontrolapp.constants.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LockerAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val packageName = event.packageName?.toString()
+        val context = this
+        val infoDao = ApplicationActivity.getInstance().appInfoDao()
 
-        // Get the shared preferences using the application context
-        val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences(
-            Constants.LOCKED_APPS_PREF,
-            Context.MODE_PRIVATE
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            // Get application lock status from local database
+            val locked = infoDao.getLockStatus(packageName.toString())
 
-        // Retrieve the value from shared preferences
-        val isLocked = sharedPreferences.getBoolean(packageName, false)
-
-        if (isLocked) {
-            val intent = Intent(this, LockScreenActivity::class.java)
-            intent.putExtra("PACKAGE_NAME", packageName)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            if (locked) {
+                val intent = Intent(context, LockScreenActivity::class.java)
+                intent.putExtra("PACKAGE_NAME", packageName)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
         }
     }
 
