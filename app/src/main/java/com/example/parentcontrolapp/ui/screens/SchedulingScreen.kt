@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -45,7 +45,6 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +52,29 @@ fun SchedulingScreen(packageName: String, appName: String) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val calendarState = rememberUseCaseState()
+    val (savedDate, setSavedDate) = remember { mutableStateOf("") }
+    val (savedStartTime, setSavedStartTime) = remember { mutableStateOf("") }
+    val (savedEndTime, setSavedEndTime) = remember { mutableStateOf("") }
     val (date, setDate) = remember { mutableStateOf("") }
+
+    LaunchedEffect(key1 = Unit) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val appInfoDao = ApplicationActivity.getInstance().appInfoDao()
+            val appMetadata = appInfoDao.getAppInfo(packageName)
+
+            if (appMetadata != null) {
+                if (!appMetadata.lockDates.isNullOrEmpty()) {
+                    setSavedDate(appMetadata.lockDates)
+                }
+                if (!appMetadata.lockStartTime.isNullOrEmpty()) {
+                    setSavedStartTime(appMetadata.lockStartTime)
+                }
+                if (!appMetadata.lockEndTime.isNullOrEmpty()) {
+                    setSavedEndTime(appMetadata.lockEndTime)
+                }
+            }
+        }
+    }
 
     AppTheme {
         CalendarDialog(
@@ -161,12 +182,25 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
                         )
-                        Text(
-                            text = if (date == "") "No dates selected" else date,
-                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
-                            textAlign = TextAlign.Justify,
-                            fontSize = 14.sp
-                        )
+
+                        // if there is a saved date inside local database
+                        // use it first before selecting. But when the user select a new
+                        // date, show the new one.
+                        if (savedDate.isNotEmpty() && date.isEmpty()) {
+                            Text(
+                                text = savedDate,
+                                modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                                textAlign = TextAlign.Justify,
+                                fontSize = 14.sp
+                            )
+                        } else {
+                            Text(
+                                text = if (date == "") "No dates selected" else date,
+                                modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                                textAlign = TextAlign.Justify,
+                                fontSize = 14.sp
+                            )
+                        }
 
                         Column(
                             modifier = Modifier.padding(bottom = 12.dp)
@@ -215,12 +249,25 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
                         )
-                        Text(
-                            text = "${if (startTime == "") "No time selected" else startTime} - ${if (endTime == "") "No time selected" else endTime}",
-                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
-                            textAlign = TextAlign.Justify,
-                            fontSize = 14.sp
-                        )
+
+                        // if there is a saved time inside local database
+                        // use it first before selecting. But when the user select a new
+                        // date, show the new one.
+                        if ((savedStartTime.isNotEmpty() && startTime.isEmpty()) || (savedEndTime.isNotEmpty() && endTime.isEmpty())) {
+                            Text(
+                                text = "$savedStartTime - $savedEndTime",
+                                modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                                textAlign = TextAlign.Justify,
+                                fontSize = 14.sp
+                            )
+                        } else {
+                            Text(
+                                text = "${if (startTime == "") "No time selected" else startTime} - ${if (endTime == "") "No time selected" else endTime}",
+                                modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                                textAlign = TextAlign.Justify,
+                                fontSize = 14.sp
+                            )
+                        }
 
                         Column(
                             modifier = Modifier.padding(bottom = 12.dp)
@@ -274,17 +321,49 @@ fun SchedulingScreen(packageName: String, appName: String) {
                     ) {
                         Button(
                             onClick = {
-                                coroutineScope.launch {
-                                    withContext(Dispatchers.IO) {
-                                        triggerScheduler(packageName, date, startTime, endTime)
-                                    }
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    triggerScheduler(packageName, date, startTime, endTime)
                                 }
+
+                                // save saved date, start time, end time
+                                setSavedDate(date)
+                                setSavedStartTime(startTime)
+                                setSavedEndTime(endTime)
+                                setStartTime("")
+                                setEndTime("")
+                                setDate("")
+
                                 Toast.makeText(context, "Successfully trigger a lock scheduler for $appName", Toast.LENGTH_LONG).show()
                             },
                             modifier = Modifier.weight(1f),
                             enabled = isValid(date, startTime, endTime)
                         ) {
                             Text("Trigger Scheduler")
+                        }
+
+                        if (savedDate.isNotEmpty() || savedStartTime.isNotEmpty() || savedEndTime.isNotEmpty()) {
+                            Spacer(modifier = Modifier.padding(horizontal = 6.dp))
+
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        triggerScheduler(packageName, "", "", "")
+                                    }
+
+                                    // reset saved date, start time, end time
+                                    setSavedDate("")
+                                    setSavedStartTime("")
+                                    setSavedEndTime("")
+                                    setStartTime("")
+                                    setEndTime("")
+                                    setDate("")
+
+                                    Toast.makeText(context, "Successfully reset a lock scheduler for $appName", Toast.LENGTH_LONG).show()
+                                },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("Reset Scheduler")
+                            }
                         }
                     }
                 }

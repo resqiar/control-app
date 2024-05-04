@@ -29,23 +29,28 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 object BackgroundTaskUtil {
+    private var isBackgroundRunning = false
+
     fun startBackgroundTask(context: Context) {
-        val handler = Handler(Looper.getMainLooper())
-        val delayMillis: Long = 60 * 1000 // 1 minute interval
+        if (!isBackgroundRunning) {
+            val handler = Handler(Looper.getMainLooper())
+            val delayMillis: Long = 60 * 1000 // 1 minute interval
 
-        val runnable = object : Runnable {
-            override fun run() {
-                getCurrentDeviceMetadata(context)
+            val runnable = object : Runnable {
+                override fun run() {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        getCurrentDeviceMetadata(context)
+                        sendApplicationDataWithDeviceData(context)
+                    }
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    sendApplicationDataWithDeviceData(context)
+                    if (isBackgroundRunning) {
+                        handler.postDelayed(this, delayMillis)
+                    }
                 }
-
-                handler.postDelayed(this, delayMillis)
             }
-        }
 
-        handler.post(runnable)
+            handler.post(runnable)
+        }
     }
 
     @SuppressLint("HardwareIds")
