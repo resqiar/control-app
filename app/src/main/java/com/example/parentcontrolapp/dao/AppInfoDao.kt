@@ -28,4 +28,9 @@ interface AppInfoDao {
 
     @Query("SELECT package_name FROM app_info")
     suspend fun getLockedApps(): List<String>
+
+    @Query(
+        "UPDATE app_info SET lock_dates = :lockDates, lock_start_time = :lockStartTime, lock_end_time = :lockEndTime WHERE package_name = :packageName"
+    )
+    suspend fun updateScheduler(packageName: String, lockDates: String, lockStartTime: String, lockEndTime: String)
 }

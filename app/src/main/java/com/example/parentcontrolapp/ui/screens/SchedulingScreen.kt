@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -29,22 +30,32 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.parentcontrolapp.ApplicationActivity
+import com.example.parentcontrolapp.dao.AppInfoDao
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SchedulingScreen(navController: NavController, packageName: String, appName: String) {
+fun SchedulingScreen(packageName: String, appName: String) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val calendarState = rememberUseCaseState()
+    val (date, setDate) = remember { mutableStateOf("") }
+
     AppTheme {
-        val calendarState = rememberUseCaseState()
-        val (date, setDate) = remember { mutableStateOf("") }
         CalendarDialog(
             state = calendarState,
             config = CalendarConfig(
@@ -262,7 +273,14 @@ fun SchedulingScreen(navController: NavController, packageName: String, appName:
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Button(
-                            onClick = { },
+                            onClick = {
+                                coroutineScope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        triggerScheduler(packageName, date, startTime, endTime)
+                                    }
+                                }
+                                Toast.makeText(context, "Successfully trigger a lock scheduler for $appName", Toast.LENGTH_LONG).show()
+                            },
                             modifier = Modifier.weight(1f),
                             enabled = isValid(date, startTime, endTime)
                         ) {
@@ -285,6 +303,12 @@ private fun isValid(date: String, startTime: String, endTime: String): Boolean {
     return date != "" || (startTime != "" && endTime != "")
 }
 
-fun triggerScheduler() {
-
+private suspend fun triggerScheduler(packageName: String, date: String, startTime: String, endTime: String) {
+    val infoDao: AppInfoDao = ApplicationActivity.getInstance().appInfoDao()
+    infoDao.updateScheduler(
+        packageName = packageName,
+        lockDates = date,
+        lockStartTime = startTime,
+        lockEndTime = endTime,
+    )
 }
