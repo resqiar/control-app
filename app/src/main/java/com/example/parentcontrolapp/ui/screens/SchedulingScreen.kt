@@ -1,3 +1,4 @@
+import android.provider.CalendarContract.Colors
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,24 +21,32 @@ import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalTime
 import android.util.Range
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -48,31 +57,41 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 fun SchedulingScreen(navController: NavController, packageName: String, appName: String) {
     AppTheme {
         val calendarState = rememberUseCaseState()
+        val (date, setDate) = remember { mutableStateOf("") }
         CalendarDialog(
             state = calendarState,
             config = CalendarConfig(
                 monthSelection = true,
                 yearSelection = true,
-
-                ),
-            selection = CalendarSelection.Dates {
-                    dates ->  val selectedDates = dates.map { it.toString() } // Convert each date to string
-                Log.d("Selected Dates", selectedDates.joinToString()) // Log the selected dates
+            ),
+            selection = CalendarSelection.Dates { dates ->
+                val selectedDates = dates.map { it.toString() } // Convert each date to string
+                setDate(selectedDates.joinToString())
             } )
 
         val clockStartState = rememberUseCaseState()
-        ClockDialog(state = clockStartState, selection = ClockSelection.HoursMinutes { hours, minutes ->
-            Log.d("Selected Start Time", "Hours: $hours, Minutes: $minutes") // Log the selected hours and minutes
-        })
+        val (startTime, setStartTime) = remember { mutableStateOf("") }
+        ClockDialog(
+            state = clockStartState,
+            selection = ClockSelection.HoursMinutes { hours, minutes ->
+                setStartTime(formatTime(hours, minutes))
+            },
+        )
 
         val clockEndState = rememberUseCaseState()
-        ClockDialog(state = clockEndState, selection = ClockSelection.HoursMinutes { hours, minutes ->
-            Log.d("Selected End Time", "Hours: $hours, Minutes: $minutes") // Log the selected hours and minutes
-        })
+        val (endTime, setEndTime) = remember { mutableStateOf("") }
+        ClockDialog(
+            state = clockEndState,
+            selection = ClockSelection.HoursMinutes { hours, minutes ->
+                setEndTime(formatTime(hours, minutes))
+            }
+        )
 
-        val appBarHeight = 64.dp
-
-        Surface(modifier = Modifier.padding(top = appBarHeight)) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(top = 64.dp)
+        ) {
             Column {
                 Card(
                     colors = CardDefaults.cardColors(
@@ -96,11 +115,9 @@ fun SchedulingScreen(navController: NavController, packageName: String, appName:
                             fontSize = 14.sp
                         )
                     }
-
                 }
 
                 Card(
-
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     ),
@@ -140,10 +157,41 @@ fun SchedulingScreen(navController: NavController, packageName: String, appName:
                             textAlign = TextAlign.Justify,
                             fontSize = 14.sp
                         )
-                        Button( modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp, start = 22.dp, end = 22.dp,), onClick = { calendarState.show() }) {
-                            Text("Set Start Dates")
+                        Text(
+                            text = "Selected Dates:",
+                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = if (date == "") "No dates selected" else date,
+                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                            textAlign = TextAlign.Justify,
+                            fontSize = 14.sp
+                        )
+
+                        Column(
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        ) {
+                            Button( modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 22.dp, end = 22.dp,), onClick = { calendarState.show() }) {
+                                Text("Set Dates")
+                            }
+                            if (date != "") {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 12.dp, start = 22.dp, end = 22.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Transparent,
+                                        contentColor = Color.Gray,
+                                    ),
+                                    onClick = { setDate("") }
+                                ) {
+                                    Text("Reset Dates")
+                                }
+                            }
                         }
                     }
                 }
@@ -163,27 +211,93 @@ fun SchedulingScreen(navController: NavController, packageName: String, appName:
                             textAlign = TextAlign.Justify,
                             fontSize = 14.sp
                         )
-                        Row(
-                            modifier = Modifier
-                                .padding(start = 22.dp, end = 22.dp, bottom = 12.dp)
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
+                        Text(
+                            text = "Selected Start Time - End Time:",
+                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "${if (startTime == "") "No time selected" else startTime} - ${if (endTime == "") "No time selected" else endTime}",
+                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
+                            textAlign = TextAlign.Justify,
+                            fontSize = 14.sp
+                        )
 
-                            Button(onClick = { clockStartState.show() }, modifier = Modifier.weight(1f)) {
-                                Text("Set Start Time")
+                        Column(
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 22.dp, end = 22.dp)
+                                    .padding(4.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = { clockStartState.show() },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Set Start Time")
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Button(onClick = { clockEndState.show() }, modifier = Modifier.weight(1f)) {
+                                    Text("Set End Time")
+                                }
                             }
 
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Button(onClick = { clockEndState.show() }, modifier = Modifier.weight(1f)) {
-                                Text("Set End Time")
+                            if (startTime != "" || endTime != "") {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 22.dp, end = 22.dp),
+                                    onClick = {
+                                        setStartTime("")
+                                        setEndTime("")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Transparent,
+                                        contentColor = Color.Gray,
+                                    )
+                                ) {
+                                    Text("Reset Times")
+                                }
                             }
                         }
                     }
+                }
 
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 22.dp, end = 22.dp, top = 8.dp, bottom = 22.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Button(
+                            onClick = { },
+                            modifier = Modifier.weight(1f),
+                            enabled = isValid(date, startTime, endTime)
+                        ) {
+                            Text("Trigger Scheduler")
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+private fun formatTime(hour: Int, minute: Int): String {
+    val formattedHour = hour.toString().padStart(2, '0')
+    val formattedMinute = minute.toString().padStart(2, '0')
+    return "$formattedHour:$formattedMinute"
+}
+
+private fun isValid(date: String, startTime: String, endTime: String): Boolean {
+    return date != "" || (startTime != "" && endTime != "")
+}
+
+fun triggerScheduler() {
+
 }
