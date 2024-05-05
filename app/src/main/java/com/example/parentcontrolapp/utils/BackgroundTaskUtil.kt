@@ -82,7 +82,7 @@ object BackgroundTaskUtil {
             override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
                 if (response.isSuccessful) {
                     val post = response.body()
-                    Log.d("DEVICE INFO RESPONSE", post?.status.toString())
+                    Log.d("Sync Device", "Syncing to remote server for: ${metadata.androidId} -> ${post?.status}")
                 } else {
                     Log.d("HTTP NOT OK", response.toString())
                 }
@@ -130,7 +130,7 @@ object BackgroundTaskUtil {
                     override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
                         if (response.isSuccessful) {
                             val post = response.body()
-                            Log.d("APP INFO RESPONSE", post?.status.toString())
+                            Log.d("Sync Application", "Syncing to remote server for: ${appMetadata.info.name} -> ${post?.status}")
                         } else {
                             Log.d("HTTP NOT OK", response.toString())
                         }
