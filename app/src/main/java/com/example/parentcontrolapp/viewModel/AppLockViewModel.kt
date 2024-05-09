@@ -1,21 +1,18 @@
 package com.example.parentcontrolapp.viewModel
 
 import android.app.Application
-import android.content.Context
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.parentcontrolapp.constants.Constants
+import com.example.parentcontrolapp.ApplicationActivity
 import com.example.parentcontrolapp.model.InstalledApp
 import com.example.parentcontrolapp.utils.getDeviceInstalledApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppLockViewModel(application: Application) : AndroidViewModel(application) {
-    private val lockedAppsPrefKey = Constants.LOCKED_APPS_PREF
-
     private val _installedApps = MutableLiveData<ArrayList<InstalledApp>>()
     val installedApps: LiveData<ArrayList<InstalledApp>> get() = _installedApps
     private fun setInstalledApps(apps: ArrayList<InstalledApp>) {
@@ -37,21 +34,26 @@ class AppLockViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // Function to lock/unlock an app
-    fun lockApplication(context: Context, packageName: String, status: Boolean) {
-        context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE).edit {
-            putBoolean(packageName, status)
+    suspend fun lockApplication(packageName: String, status: Boolean) {
+        val infoDao = ApplicationActivity.getInstance().appInfoDao()
+        withContext(Dispatchers.IO) {
+            infoDao.updateLock(packageName, status)
         }
     }
 
     // Function to check if an app is locked
-    fun getLockStatus(context: Context, packageName: String): Boolean {
-        val prefs = context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE)
-        return prefs.getBoolean(packageName, false) // Return true if the app is locked, false otherwise
+    suspend fun getLockStatus(packageName: String): Boolean {
+        val infoDao = ApplicationActivity.getInstance().appInfoDao()
+        return withContext(Dispatchers.IO) {
+            infoDao.getLockStatus(packageName)
+        }
     }
 
     // Function to get list of all locked apps
-    fun getAllLockedApps(context: Context): List<String> {
-        val prefs = context.getSharedPreferences(lockedAppsPrefKey, Context.MODE_PRIVATE)
-        return prefs.all.filterValues { it == true }.keys.toList()
+    suspend fun getAllLockedApps(): List<String> {
+        val infoDao = ApplicationActivity.getInstance().appInfoDao()
+        return withContext(Dispatchers.IO) {
+            infoDao.getLockedApps()
+        }
     }
 }

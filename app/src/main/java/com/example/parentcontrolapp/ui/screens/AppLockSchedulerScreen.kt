@@ -1,5 +1,6 @@
 package com.example.parentcontrolapp.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,16 +10,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.parentcontrolapp.AccessibilityPermissionActivity
 import com.example.parentcontrolapp.ui.theme.AppTheme
+import com.example.parentcontrolapp.utils.checkAccessibility
 import com.example.parentcontrolapp.viewModel.MainViewModel
 
 
 @Composable
 fun AppLockSchedulerScreen(navController: NavController) {
     val viewModel: MainViewModel = viewModel()
+    val context = LocalContext.current
+
+    // check permissions for accessibility
+    if (!checkAccessibility(context)) {
+        val intent = Intent(context, AccessibilityPermissionActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    }
+
     AppTheme {
         val apps by viewModel.installedApps.observeAsState(
             ArrayList(emptyList())

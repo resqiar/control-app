@@ -21,6 +21,7 @@
 
 
     <application
+        android:name=".ApplicationActivity"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -56,6 +57,11 @@
 
         <activity
             android:name=".LockScreenActivity"
+            android:exported="true"
+            android:taskAffinity="com.example.sendigi.lockscreen"
+            android:theme="@style/Theme.ParentControlApp"/>
+        <activity
+            android:name=".LockScheduledActivity"
             android:exported="true"
             android:taskAffinity="com.example.sendigi.lockscreen"
             android:theme="@style/Theme.ParentControlApp"/>

@@ -206,7 +206,7 @@ fun NavDrawer() {
                         val appName = backStackEntry.arguments?.getString("appName")
                         packageName?.let { nonNullPackageName ->
                             appName?.let { nonNullAppName ->
-                                SchedulingScreen(navController = navigationController, packageName = nonNullPackageName, appName = nonNullAppName)
+                                SchedulingScreen(packageName = nonNullPackageName, appName = nonNullAppName)
                             }
                         }
                     }
