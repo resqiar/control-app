@@ -26,10 +26,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,9 @@ import com.example.parentcontrolapp.AccessibilityPermissionActivity
 import com.example.parentcontrolapp.model.InstalledApp
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.utils.checkAccessibility
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AppLockScreen() {
@@ -76,11 +81,10 @@ fun AppLockScreen() {
 fun InstalledAppsScreen(
     viewModel: AppLockViewModel = viewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val apps by viewModel.installedApps.observeAsState(
         ArrayList(emptyList())
     )
-
-    val context = LocalContext.current
 
     Scaffold {
         Column {
@@ -88,16 +92,20 @@ fun InstalledAppsScreen(
 
             Button(
                 onClick = {
-                    // Get the list of locked apps
-                    val lockedApps = viewModel.getAllLockedApps(context)
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            // Get the list of locked apps
+                            val lockedApps = viewModel.getAllLockedApps()
 
-                    // Apply changes
-                    apps.forEach { app ->
-                        if (viewModel.isAppLocked(context, app.packageName) != app.packageName in lockedApps) {
-                            if (app.packageName in lockedApps) {
-                                viewModel.lockApp(context, app.packageName, true)
-                            } else {
-                                viewModel.lockApp(context, app.packageName, false)
+                            // Apply changes
+                            apps.forEach { app ->
+                                if (viewModel.getLockStatus(app.packageName) != app.packageName in lockedApps) {
+                                    if (app.packageName in lockedApps) {
+                                        viewModel.lockApplication(app.packageName, true)
+                                    } else {
+                                        viewModel.lockApplication(app.packageName, false)
+                                    }
+                                }
                             }
                         }
                     }
@@ -128,16 +136,22 @@ fun AppItem(
     viewModel: AppLockViewModel
 ) {
     val context = LocalContext.current
-    var isAppLocked by remember {
-        mutableStateOf(viewModel.isAppLocked(context, app.packageName))
+    val coroutineScope = rememberCoroutineScope()
+
+    // initialize as false,
+    // then update the value from launched effect (coroutine scope)
+    var isAppLocked by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(key1 = app.packageName) {
+        val status = viewModel.getLockStatus(app.packageName)
+        isAppLocked = status
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp).padding(horizontal = 8.dp)
-
-
+            .padding(8.dp)
+            .padding(horizontal = 8.dp)
             .clickable {
                 // Toggle the checkbox state and update the UI
                 isAppLocked = !isAppLocked
@@ -198,10 +212,18 @@ fun AppItem(
                         isAppLocked = isChecked
                         if (isChecked) {
                             Toast.makeText(context, "App Successfully Locked!", Toast.LENGTH_LONG).show()
-                            viewModel.lockApp(context, app.packageName, true)
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    viewModel.lockApplication(app.packageName, true)
+                                }
+                            }
                         } else {
                             Toast.makeText(context, "App Successfully Unlocked!", Toast.LENGTH_LONG).show()
-                            viewModel.lockApp(context, app.packageName, false)
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    viewModel.lockApplication(app.packageName, false)
+                                }
+                            }
                         }
                     }
                 )

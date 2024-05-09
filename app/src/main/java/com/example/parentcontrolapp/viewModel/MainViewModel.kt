@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.parentcontrolapp.model.InstalledApp
-import com.example.parentcontrolapp.utils.getInstalledApps
+import com.example.parentcontrolapp.utils.getDeviceInstalledApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -27,7 +27,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private fun startPeriodicUpdates() {
         viewModelScope.launch(Dispatchers.Default) {
             while (true) {
-                val updatedApps = getInstalledApps(getApplication<Application>().applicationContext)
+                val updatedApps = getDeviceInstalledApplication(getApplication<Application>().applicationContext)
                 setInstalledApps(updatedApps)
                 delay(60 * 1000) // 60 seconds
             }
