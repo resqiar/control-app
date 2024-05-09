@@ -14,6 +14,7 @@ import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.dao.AppInfoDao
 import com.example.parentcontrolapp.entities.AppInfoEntity
 import com.example.parentcontrolapp.model.AppInfo
+import com.example.parentcontrolapp.model.AppScheduledData
 import com.example.parentcontrolapp.model.ApplicationMetadata
 import com.example.parentcontrolapp.model.DeviceInfo
 import com.example.parentcontrolapp.model.InstalledApp
@@ -33,6 +34,7 @@ object BackgroundTaskUtil {
 
     fun startBackgroundTask(context: Context) {
         if (!isBackgroundRunning) {
+            isBackgroundRunning = true
             val handler = Handler(Looper.getMainLooper())
             val delayMillis: Long = 60 * 1000 // 1 minute interval
 
@@ -42,10 +44,7 @@ object BackgroundTaskUtil {
                         getCurrentDeviceMetadata(context)
                         sendApplicationDataWithDeviceData(context)
                     }
-
-                    if (isBackgroundRunning) {
-                        handler.postDelayed(this, delayMillis)
-                    }
+                    handler.postDelayed(this, delayMillis)
                 }
             }
 
@@ -188,6 +187,7 @@ object BackgroundTaskUtil {
         // get lock status for current app in local database
         return withContext(Dispatchers.IO) {
             val status = infoDao.getLockStatus(packageName = app.packageName)
+            val data = infoDao.getAppInfo(app.packageName)
 
             // convert bitmap icon to base64
             val icon = bitmapToBase64(app.icon)
@@ -198,12 +198,20 @@ object BackgroundTaskUtil {
                 timeUsage = app.rawTime,
                 lockStatus = status,
                 androidId = metadata.androidId,
+                dateLocked = data?.lockDates ?: "",
+                timeStartLocked = data?.lockStartTime ?: "",
+                timeEndLocked = data?.lockEndTime ?: "",
             )
 
             ApplicationMetadata(
                 status,
                 icon,
-                appInfo
+                appInfo,
+                AppScheduledData(
+                    lockDates = data?.lockDates,
+                    lockStartTime = data?.lockStartTime,
+                    lockEndTime = data?.lockEndTime
+                ),
             )
         }
     }
