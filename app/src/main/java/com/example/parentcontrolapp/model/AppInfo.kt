@@ -11,3 +11,13 @@ data class AppInfo (
     val timeStartLocked: String,
     val timeEndLocked: String,
 )
+
+data class AppInfoMessage (
+    val name: String,
+    val packageName: String,
+    val timeUsage: Long,
+    val lockStatus: Boolean,
+    val dateLocked: String,
+    val timeStartLocked: String,
+    val timeEndLocked: String,
+)

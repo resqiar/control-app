@@ -8,7 +8,7 @@ import android.provider.Settings
 import com.example.parentcontrolapp.model.DeviceInfo
 
 @SuppressLint("HardwareIds")
-fun GetDeviceMetadata(context: Context): DeviceInfo {
+fun getDeviceMetadata(context: Context): DeviceInfo {
     val androidID = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     val deviceName: String = Build.MODEL
     val deviceBrand: String = Build.BRAND

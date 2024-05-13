@@ -81,6 +81,7 @@ fun AppLockScreen() {
 fun InstalledAppsScreen(
     viewModel: AppLockViewModel = viewModel()
 ) {
+    val ctx = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val apps by viewModel.installedApps.observeAsState(
         ArrayList(emptyList())
@@ -101,9 +102,9 @@ fun InstalledAppsScreen(
                             apps.forEach { app ->
                                 if (viewModel.getLockStatus(app.packageName) != app.packageName in lockedApps) {
                                     if (app.packageName in lockedApps) {
-                                        viewModel.lockApplication(app.packageName, true)
+                                        viewModel.lockApplication(ctx, app.packageName, true)
                                     } else {
-                                        viewModel.lockApplication(app.packageName, false)
+                                        viewModel.lockApplication(ctx, app.packageName, false)
                                     }
                                 }
                             }
@@ -214,14 +215,14 @@ fun AppItem(
                             Toast.makeText(context, "App Successfully Locked!", Toast.LENGTH_LONG).show()
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
-                                    viewModel.lockApplication(app.packageName, true)
+                                    viewModel.lockApplication(context, app.packageName, true)
                                 }
                             }
                         } else {
                             Toast.makeText(context, "App Successfully Unlocked!", Toast.LENGTH_LONG).show()
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
-                                    viewModel.lockApplication(app.packageName, false)
+                                    viewModel.lockApplication(context, app.packageName, false)
                                 }
                             }
                         }

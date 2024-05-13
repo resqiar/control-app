@@ -104,4 +104,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+
+    // Rabbit MQ
+    implementation("com.rabbitmq:amqp-client:5.15.0")
+    implementation("org.slf4j:slf4j-simple:2.0.0")
+    implementation("org.slf4j:slf4j-api:2.0.0")
 }
