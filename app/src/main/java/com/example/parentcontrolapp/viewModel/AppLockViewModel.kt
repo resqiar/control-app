@@ -1,12 +1,14 @@
 package com.example.parentcontrolapp.viewModel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.parentcontrolapp.ApplicationActivity
 import com.example.parentcontrolapp.model.InstalledApp
+import com.example.parentcontrolapp.utils.api.sendApplicationDataWithDeviceData
 import com.example.parentcontrolapp.utils.getDeviceInstalledApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,10 +36,13 @@ class AppLockViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // Function to lock/unlock an app
-    suspend fun lockApplication(packageName: String, status: Boolean) {
+    suspend fun lockApplication(ctx: Context, packageName: String, status: Boolean) {
         val infoDao = ApplicationActivity.getInstance().appInfoDao()
         withContext(Dispatchers.IO) {
             infoDao.updateLock(packageName, status)
+
+            // send updated data in the background
+            sendApplicationDataWithDeviceData(ctx)
         }
     }
 
