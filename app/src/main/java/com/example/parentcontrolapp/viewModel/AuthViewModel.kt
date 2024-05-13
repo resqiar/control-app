@@ -72,7 +72,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
                                             // save token to shared preference
                                             _isLoggedIn.value = true
-                                            setLoggedIn(context, post?.token ?: "")
+                                            setLoggedIn(context, post?.token ?: "", post?.id ?: "")
 
                                             Toast.makeText(context, "Successfully signed in!", Toast.LENGTH_LONG).show()
 
@@ -111,10 +111,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         return status.isNotEmpty()
     }
 
-    private fun setLoggedIn(context: Context, token: String) {
+    private fun setLoggedIn(context: Context, token: String, userID: String) {
         context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
             .edit()
             .putString(Constants.LOG_TOKEN_PREF, token)
+            .apply()
+        context.getSharedPreferences(Constants.LOG_USERID_PREF, Context.MODE_PRIVATE)
+            .edit()
+            .putString(Constants.LOG_USERID_PREF, userID)
             .apply()
     }
 }

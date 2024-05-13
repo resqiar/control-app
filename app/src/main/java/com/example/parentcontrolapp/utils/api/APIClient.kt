@@ -28,6 +28,8 @@ object ApiClient {
 }
 
 data class TokenResponse(
+    @SerializedName("id")
+    val id: String,
     @SerializedName("token")
     val token: String
 )
