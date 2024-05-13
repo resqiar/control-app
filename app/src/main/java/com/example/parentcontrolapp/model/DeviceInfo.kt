@@ -12,6 +12,13 @@ data class DeviceInfo(
     val isCharging: Boolean,
 )
 
+data class DeviceActivity(
+    val name: String,
+    val description: String,
+    val packageName: String,
+    val deviceId: String,
+)
+
 data class AppScheduledData (
     val lockDates: String? = "",
     val lockStartTime: String? = "",

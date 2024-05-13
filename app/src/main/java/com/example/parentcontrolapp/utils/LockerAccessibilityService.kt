@@ -2,14 +2,23 @@ package com.example.parentcontrolapp.utils
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.example.parentcontrolapp.ApplicationActivity
 import com.example.parentcontrolapp.LockScheduledActivity
 import com.example.parentcontrolapp.LockScreenActivity
+import com.example.parentcontrolapp.constants.Constants
+import com.example.parentcontrolapp.model.DeviceActivity
+import com.example.parentcontrolapp.utils.api.ApiClient
+import com.example.parentcontrolapp.utils.api.StatusResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -27,6 +36,9 @@ class LockerAccessibilityService : AccessibilityService() {
                 val info = infoDao.getAppInfo(packageName)
 
                 if (info != null) {
+                    // Save neutral log
+                    syncDeviceActivity(context, info.name, info.packageName, "[Info] Opening application")
+
                     val current = Date()
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -44,6 +56,9 @@ class LockerAccessibilityService : AccessibilityService() {
                         }
 
                         if (locked) {
+                            // save log activity
+                            syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+
                             val intent = Intent(context, LockScheduledActivity::class.java)
                             intent.putExtra("PACKAGE_NAME", packageName)
                             intent.putExtra("DATES", savedDates.toTypedArray())
@@ -75,6 +90,9 @@ class LockerAccessibilityService : AccessibilityService() {
                         val locked = currentTimeMillis in startTimeMillis..<endTimeMillis
 
                         if (locked) {
+                            // save log activity
+                            syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+
                             val intent = Intent(context, LockScheduledActivity::class.java)
                             intent.putExtra("PACKAGE_NAME", packageName)
                             intent.putExtra("START_TIME", info.lockStartTime)
@@ -86,6 +104,9 @@ class LockerAccessibilityService : AccessibilityService() {
 
                     // if current opened app is locked by "Specific"
                     else if (info.lockStatus) {
+                        // save log activity
+                        syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+
                         val intent = Intent(context, LockScreenActivity::class.java)
                         intent.putExtra("PACKAGE_NAME", packageName)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -113,4 +134,42 @@ class LockerAccessibilityService : AccessibilityService() {
 
         this.serviceInfo = info
     }
-}
+
+    private fun syncDeviceActivity(context: Context, name: String, packageName: String, desc: String) {
+            // skip logging parental app
+            if (packageName == context.packageName) return
+
+            val metadata = getDeviceMetadata(context)
+
+            val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
+                .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
+
+            // if there is no token, skip
+            if (token.isEmpty()) return
+
+            val call = ApiClient.apiService.syncDeviceActivity(
+                token = token,
+                DeviceActivity(
+                    deviceId = metadata.androidId,
+                    name = name,
+                    packageName = packageName,
+                    description = desc,
+                )
+            )
+
+            call.enqueue(object: Callback<StatusResponse> {
+                override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+                    if (response.isSuccessful) {
+                        val post = response.body()
+                        Log.d("Sync Device Activity", "Syncing to remote server for: ${metadata.androidId} -> ${post?.status}")
+                    } else {
+                        Log.d("HTTP NOT OK", response.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                    Log.d("HTTP FAILURE", t.message.toString())
+                }
+            })
+        }
+    }

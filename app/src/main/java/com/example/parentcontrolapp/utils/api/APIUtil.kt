@@ -1,6 +1,5 @@
 package com.example.parentcontrolapp.utils.api
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.example.parentcontrolapp.ApplicationActivity
@@ -29,7 +28,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-@SuppressLint("HardwareIds")
 fun getCurrentDeviceMetadata(context: Context) {
     val metadata = getDeviceMetadata(context)
 

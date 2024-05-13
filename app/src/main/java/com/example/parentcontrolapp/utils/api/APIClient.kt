@@ -2,6 +2,7 @@ package com.example.parentcontrolapp.utils.api
 
 import com.example.parentcontrolapp.constants.Constants
 import com.example.parentcontrolapp.model.AppInfo
+import com.example.parentcontrolapp.model.DeviceActivity
 import com.example.parentcontrolapp.model.DeviceInfo
 import com.example.parentcontrolapp.model.GooglePayload
 import com.google.gson.annotations.SerializedName
@@ -47,6 +48,12 @@ interface ApiService {
     fun syncDevice(
         @Header("Authorization") token: String,
         @Body() payload: DeviceInfo
+    ): Call<StatusResponse>
+
+    @POST("/mobile/sync-device-activity")
+    fun syncDeviceActivity(
+        @Header("Authorization") token: String,
+        @Body() payload: DeviceActivity
     ): Call<StatusResponse>
 
     @POST("/mobile/sync-app")
