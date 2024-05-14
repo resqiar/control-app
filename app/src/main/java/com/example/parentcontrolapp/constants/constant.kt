@@ -5,7 +5,7 @@ object Constants {
     const val LOG_TOKEN_PREF = "log_token_pref"
     const val LOG_USERID_PREF = "log_userid_pref"
 //    const val HTTP_SERVER_URL = "http://10.0.2.2:8888"
-    const val HTTP_SERVER_URL = "https://sendigi-server.resqiar.com"
+    const val HTTP_SERVER_URL = "https://server.sendigi.id"
     const val RABBITMQ_USERNAME = "mobile_consumer"
     const val RABBITMQ_PASSWORD = "sUFNb4WnTL7ZvErcSHP35w6e"
 //    const val RABBITMQ_HOST = "10.0.2.2"
