@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.parentcontrolapp.R
@@ -49,30 +50,53 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
             // only show text when parent scheduled by Date
             if (!dates.isNullOrEmpty()) {
                 Text(
-                    text = "This Application is Locked by Your Parent from ${dates.first()} until ${dates.last()}",
+                    text = "This Application is Locked by Your Parent",
                     modifier = Modifier.padding(bottom = 16.dp),
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Center,
+
                     )
                 )
+                Text(
+                    text = "From ${dates.first()} until ${dates.last()}",
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                )
+
             }
 
             // only show text when parent scheduled by Time
             if (!startTime.isNullOrEmpty() && !endTime.isNullOrEmpty()) {
                 Text(
-                    text = "This Application is Locked by Your Parent from $startTime until $endTime",
+                    text = "This Application is Locked by Your Parent",
                     modifier = Modifier.padding(bottom = 16.dp),
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                )
+                Text(
+                    text = "From $startTime until $endTime",
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Center,
                     )
                 )
             }
 
             Text(
                 text = "Use your time and device more responsibly.",
-                modifier = Modifier.padding(bottom = 24.dp)
+                modifier = Modifier.padding(bottom = 24.dp),
+                style = TextStyle(textAlign = TextAlign.Center,)
             )
             Button(onClick = {
                 exitToHome(ctx, pkgName)
