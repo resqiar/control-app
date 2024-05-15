@@ -36,9 +36,6 @@ class LockerAccessibilityService : AccessibilityService() {
                 val info = infoDao.getAppInfo(packageName)
 
                 if (info != null) {
-                    // Save neutral log
-                    syncDeviceActivity(context, info.name, info.packageName, "[Info] Opening application")
-
                     val current = Date()
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -111,6 +108,11 @@ class LockerAccessibilityService : AccessibilityService() {
                         intent.putExtra("PACKAGE_NAME", packageName)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
+                    }
+
+                    else {
+                        // Save neutral log
+                        syncDeviceActivity(context, info.name, info.packageName, "[Info] Opening application")
                     }
                 }
             }
