@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -39,6 +41,7 @@ fun HomeScreen(navController: NavController) {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.Center)
+                .verticalScroll(rememberScrollState())
             ) {
                 Text(text = "Welcome", fontSize = 28.sp)
 

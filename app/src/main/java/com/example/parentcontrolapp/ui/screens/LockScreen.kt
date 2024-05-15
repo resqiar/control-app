@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,12 +53,15 @@ fun LockScreen(pkgName: String) {
                 modifier = Modifier.padding(bottom = 16.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 17.sp
+                    fontSize = 17.sp,
+                    textAlign = TextAlign.Center,
+
                 )
             )
             Text(
                 text = "Use your time and device more responsibly.",
-                modifier = Modifier.padding(bottom = 24.dp)
+                modifier = Modifier.padding(bottom = 24.dp),
+                textAlign = TextAlign.Center,
             )
             Button(onClick = {
                 exitToHome(ctx, pkgName)
