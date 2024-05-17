@@ -23,7 +23,9 @@ fun checkAccessibility(ctx: Context): Boolean {
     val accessibilityService = accessibilityManager.getEnabledAccessibilityServiceList(
         AccessibilityServiceInfo.FEEDBACK_ALL_MASK
     )
-    return accessibilityService.any()
+    return accessibilityService.any {
+        it.resolveInfo.serviceInfo.packageName == ctx.packageName && it.resolveInfo.serviceInfo.name == "${ctx.packageName}.utils.LockerAccessibilityService"
+    }
 }
 
 fun askAccessibilityPermission(ctx: Context) {

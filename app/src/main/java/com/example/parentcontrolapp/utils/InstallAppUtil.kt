@@ -8,18 +8,19 @@ import com.example.parentcontrolapp.model.InstalledApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun getDeviceInstalledApplication(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.Default) {
+suspend fun getDeviceInstalledApplication(ctx: Context): ArrayList<InstalledApp> = withContext(Dispatchers.IO) {
     val packageManager = ctx.packageManager
     var apps = ArrayList<InstalledApp>()
 
     val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
-    withContext(Dispatchers.Main) {
-        if (!getUsageStatsPermission(ctx)) {
+    if (!getUsageStatsPermission(ctx)) {
+        withContext(Dispatchers.Main) {
             val intent = Intent(ctx, PermissionActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             ctx.startActivity(intent)
         }
+        return@withContext apps
     }
 
     val usageApps = getAppIndividualUsage(ctx)
@@ -27,7 +28,7 @@ suspend fun getDeviceInstalledApplication(ctx: Context): ArrayList<InstalledApp>
     for (app in installedApps) {
         val label = packageManager.getApplicationLabel(app).toString()
 
-        if (!excludeSystemApplication(ctx, app.packageName, app)) {
+        if (!excludeSystemApplication(ctx, app.packageName)) {
             val icon = convertToBitmap(packageManager.getApplicationIcon(app.packageName))
             val usage = usageApps.find {
                 it.packageName == app.packageName

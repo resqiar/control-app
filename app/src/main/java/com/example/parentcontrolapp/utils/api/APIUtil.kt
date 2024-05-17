@@ -198,16 +198,8 @@ fun initListenMQ(ctx: Context) {
 
                     Log.d("[Queue] Syncing to local state: ", message.packageName)
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val infoDao = ApplicationActivity.getInstance().appInfoDao()
-                        infoDao.serverUpdateAppInfo(
-                            packageName = message.packageName,
-                            lockStatus = message.lockStatus,
-                            dateLocked = message.dateLocked,
-                            timeStartLocked = message.timeStartLocked,
-                            timeEndLocked = message.timeEndLocked,
-                        )
-                    }
+                    // update local state to a new one
+                    updateState(message)
                 }
             }
 
@@ -222,4 +214,20 @@ fun initListenMQ(ctx: Context) {
             override fun handleCancel(consumerTag: String?) {}
             override fun handleRecoverOk(consumerTag: String?) {}
         })
+}
+
+private fun updateState(message: AppInfoMessage) {
+    CoroutineScope(Dispatchers.IO).launch {
+        // get room data access object
+        val infoDao = ApplicationActivity.getInstance().appInfoDao()
+
+        // update local copy to a new one
+        infoDao.serverUpdateAppInfo(
+            packageName = message.packageName,
+            lockStatus = message.lockStatus,
+            dateLocked = message.dateLocked,
+            timeStartLocked = message.timeStartLocked,
+            timeEndLocked = message.timeEndLocked,
+        )
+    }
 }

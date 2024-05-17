@@ -2,6 +2,7 @@ package com.example.parentcontrolapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
+
+        Log.d("Accessibility Service", checkAccessibility(this).toString())
 
         setContent {
             AppTheme {

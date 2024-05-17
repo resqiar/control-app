@@ -1,7 +1,6 @@
 package com.example.parentcontrolapp.utils
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -20,7 +19,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-fun excludeSystemApplication(ctx: Context, packageName: String, appInfo: ApplicationInfo): Boolean {
+fun excludeSystemApplication(ctx: Context, packageName: String): Boolean {
+    // if package does not have launch intent, then that is a system app
+    ctx.packageManager.getLaunchIntentForPackage(packageName) ?: return true
+
     val metadata = ctx.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
     val label = ctx.packageManager.getApplicationLabel(metadata.applicationInfo).toString()
 
@@ -62,8 +64,7 @@ fun excludeSystemApplication(ctx: Context, packageName: String, appInfo: Applica
     }
 
     if (label.startsWith("com.")) return true
-    if (label.lowercase() == metadata.packageName) return true
-    return appInfo.publicSourceDir.startsWith("/system")
+    return label.lowercase() == metadata.packageName
 }
 
 fun convertToBitmap(icon: Drawable): ImageBitmap {
