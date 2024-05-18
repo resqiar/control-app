@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">ParentControlApp</string>
+    <string name="app_name">SenDigi</string>
     <string name="accessibility_service_label">SenDigi</string>
-    <string name="accessibility_service_description">A service to be able to monitor applications</string>
+    <string name="accessibility_service_description">
+        SenDigi requests the "Accessibility Service" permission to monitor and interact with other running applications on your device. This permission allows the app to display an overlay lock over other apps when they are running. When the overlay lock is activated, it will launch a specific activity within this app.
+        In this app, the service is used to detect when certain apps are running and display an overlay lock on top of them. This feature is intended to help you manage and control your app usage by temporarily restricting access to other apps.
+    </string>
 </resources>

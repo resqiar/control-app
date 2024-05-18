@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.parentcontrolapp"
+    namespace = "com.resqiar.sendigi"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.parentcontrolapp"
+        applicationId = "com.resqiar.sendigi"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
