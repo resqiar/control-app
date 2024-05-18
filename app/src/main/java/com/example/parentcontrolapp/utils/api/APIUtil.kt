@@ -205,7 +205,7 @@ fun initListenMQ(ctx: Context) {
 
             override fun handleShutdownSignal(consumerTag: String?, sig: ShutdownSignalException?) {
                 sig?.let {
-                    throw it
+                    Log.d("RabbitMQ Shutdown Signal", consumerTag.toString())
                 }
             }
 

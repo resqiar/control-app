@@ -33,7 +33,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId("857821872497-2c3uhqee548ubhisdkr8p8rhru4ls2sh.apps.googleusercontent.com")
+            .setServerClientId(Constants.SERVER_CLIENT_ID)
             .build()
 
         val request = GetCredentialRequest.Builder()

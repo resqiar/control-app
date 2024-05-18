@@ -1,43 +1,37 @@
 package com.example.parentcontrolapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parentcontrolapp.ui.theme.AppTheme
 import com.example.parentcontrolapp.utils.BackgroundTaskUtil
 import com.example.parentcontrolapp.utils.checkAccessibility
+import com.example.parentcontrolapp.utils.getUsageStatsPermission
 import com.example.parentcontrolapp.viewModel.AuthViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        // authentication data coming from the view model
+        val viewModel: AuthViewModel by viewModels()
 
-        Log.d("Accessibility Service", checkAccessibility(this).toString())
+        CoroutineScope(Dispatchers.IO).launch {
+            handleAskPermissions(this@MainActivity)
+        }
+
+        // show splash screen while waiting for background process to ask permissions
+        installSplashScreen()
 
         setContent {
             AppTheme {
-                val viewModel: AuthViewModel = viewModel()
-
-                if (viewModel.isLoggedIn.value == true) {
-                    // check permissions for accessibility
-                    if (!checkAccessibility(this)) {
-                        val intent = Intent(this, AccessibilityPermissionActivity::class.java)
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                    }
-
-                    // trigger background task
-                    BackgroundTaskUtil.startBackgroundTask(this)
-                }
-
                 if (viewModel.isLoggedIn.value == true) {
                     NavDrawer()
                 } else {
@@ -46,5 +40,26 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+private fun handleAskPermissions(ctx: Context) {
+    // check permissions for usage stats
+    if (!getUsageStatsPermission(ctx)) {
+        val intent = Intent(ctx, PermissionActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        ctx.startActivity(intent)
+    }
+
+    // check permissions for accessibility
+    else if (!checkAccessibility(ctx)) {
+        val intent = Intent(ctx, AccessibilityPermissionActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        ctx.startActivity(intent)
+    }
+
+    // if everything fine, trigger background task
+    else {
+        BackgroundTaskUtil.startBackgroundTask(ctx)
     }
 }

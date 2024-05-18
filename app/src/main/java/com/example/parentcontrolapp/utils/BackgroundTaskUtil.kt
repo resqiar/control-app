@@ -29,8 +29,12 @@ object BackgroundTaskUtil {
             val runnable = object : Runnable {
                 override fun run() {
                     CoroutineScope(Dispatchers.IO).launch {
-                        getCurrentDeviceMetadata(context)
-                        sendApplicationDataWithDeviceData(context)
+                        // check internet connection first before sending state to remote server
+                        // only run when there is an internet connection
+                        if (checkDeviceConnection(context)) {
+                            getCurrentDeviceMetadata(context)
+                            sendApplicationDataWithDeviceData(context)
+                        }
                     }
                     handler.postDelayed(this, delayMillis)
                 }

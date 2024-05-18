@@ -2,6 +2,8 @@ package com.example.parentcontrolapp.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
@@ -31,4 +33,14 @@ fun getDeviceMetadata(context: Context): DeviceInfo {
         batteryLevel,
         isCharging
     )
+}
+
+fun checkDeviceConnection(ctx: Context): Boolean {
+    val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork = connectivityManager.activeNetwork ?: return false
+    val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+    return when {
+        networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) -> true
+        else -> false
+    }
 }
