@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ParentControlApp.Splash" parent="Theme.SplashScreen">
+    <style name="Theme.Sendigi.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_sendigi</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
-        <item name="postSplashScreenTheme">@style/Theme.ParentControlApp</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sendigi</item>
     </style>
 </resources>
