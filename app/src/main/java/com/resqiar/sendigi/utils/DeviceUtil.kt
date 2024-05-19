@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import com.resqiar.sendigi.model.DeviceInfo
 
 @SuppressLint("HardwareIds")
@@ -36,6 +37,7 @@ fun getDeviceMetadata(context: Context): DeviceInfo {
 }
 
 fun checkDeviceConnection(ctx: Context): Boolean {
+    Log.d("RUN", "RUN")
     val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork = connectivityManager.activeNetwork ?: return false
     val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false

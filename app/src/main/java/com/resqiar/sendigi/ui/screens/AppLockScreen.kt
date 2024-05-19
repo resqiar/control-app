@@ -41,10 +41,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.resqiar.sendigi.AccessibilityPermissionActivity
+import com.resqiar.sendigi.PopUpWindowPermissionActivity
 import com.resqiar.sendigi.model.InstalledApp
 import com.resqiar.sendigi.ui.theme.AppTheme
-import com.resqiar.sendigi.utils.checkAccessibility
+import com.resqiar.sendigi.utils.XiaomiUtilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,11 +53,13 @@ import kotlinx.coroutines.withContext
 fun AppLockScreen() {
     val context = LocalContext.current
 
-    // check permissions for accessibility
-    if (!checkAccessibility(context)) {
-        val intent = Intent(context, AccessibilityPermissionActivity::class.java)
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        context.startActivity(intent)
+    // check additional permission for Xiaomi device
+    if (XiaomiUtilities.isMIUI()) {
+        if (!XiaomiUtilities.isCustomPermissionGranted(context, XiaomiUtilities.OP_BACKGROUND_START_ACTIVITY)) {
+            val intent = Intent(context, PopUpWindowPermissionActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            context.startActivity(intent)
+        }
     }
 
     AppTheme {
@@ -140,7 +142,7 @@ fun AppItem(
     // initialize as false,
     // then update the value from launched effect (coroutine scope)
     var isAppLocked by remember { mutableStateOf(false) }
-    
+
     LaunchedEffect(key1 = app.packageName) {
         val status = viewModel.getLockStatus(app.packageName)
         isAppLocked = status

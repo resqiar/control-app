@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -18,8 +17,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,7 +32,7 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun MinimalDialog(
     title: String,
-    description: String,
+    description: AnnotatedString,
     cancelText: String,
     confirmText: String,
     onDismiss: () -> Unit,
@@ -41,7 +45,7 @@ fun MinimalDialog(
         Card(
            modifier = Modifier
                .fillMaxWidth()
-               .height(IntrinsicSize.Min),
+               .height(IntrinsicSize.Max),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
@@ -74,8 +78,7 @@ fun MinimalDialog(
                 ) {
                     TextButton(
                         modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .size(width = 60.dp, height = 30.dp),
+                            .padding(horizontal = 10.dp),
                         onClick = onDismiss,
 
                     ) {
@@ -86,12 +89,11 @@ fun MinimalDialog(
                     }
 
                     Button(
-                        modifier = Modifier.padding(0.dp).size(width = 120.dp, height = 30.dp),
+                        modifier = Modifier.padding(0.dp),
                         onClick = onConfirm,
                     ) {
                         Text(
                             text = confirmText,
-
                             fontSize = 10.sp
                         )
                     }
@@ -104,21 +106,20 @@ fun MinimalDialog(
 @Preview
 @Composable
 fun MinimalDialogPreview() {
+    val styledDescription = buildAnnotatedString {
+        append("To use this app effectively, please grant the necessary permissions:\n\n")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("Usage Stats Permission:")
+        }
+        append("\n1. Open your device settings.\n2. Navigate to \"Apps\" or 'Application Manager.'\n3. Find and select 'Your App Name.'\n4. Tap 'Permissions.'\n5. Enable 'Usage Access' or 'Usage Stats.'\n\n")
+        withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+            append("Granting this permission allows us to provide you with your device data. ")
+        }
+    }
+
     MinimalDialog(
-        title = "\uD83D\uDD12 Permissions Required! \uD83D\uDD12",
-        description = """
-                        To use this app effectively, please grant the necessary permissions:
-
-                        Usage Stats Permission:
-
-                        1. Open your device settings.
-                        2. Navigate to 'Apps' or 'Application Manager.'
-                        3. Find and select 'Your App Name.'
-                        4. Tap 'Permissions.'
-                        5. Enable 'Usage Access' or 'Usage Stats.'
-
-                        Granting this permission allows us to provide you with valuable insights and features. Thank you for your cooperation!
-                    """.trimIndent(),
+        title = "Permissions Required!",
+        description = styledDescription,
         cancelText = "Exit",
         confirmText = "Go to Settings",
         onDismiss = {},
