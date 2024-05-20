@@ -43,7 +43,7 @@ fun HomeScreen(navController: NavController) {
                 .align(Alignment.Center)
                 .verticalScroll(rememberScrollState())
             ) {
-                Text(text = "Welcome", fontSize = 28.sp)
+                Text(text = "Selamat Datang!", fontSize = 24.sp)
 
                 Card(
                     colors = CardDefaults.cardColors(
@@ -60,10 +60,10 @@ fun HomeScreen(navController: NavController) {
                     ) {
                         Icon(imageVector = Icons.Filled.Info, contentDescription = "Info", modifier = Modifier.padding(6.dp))
                         Text(
-                            text = "Your trusted solution to monitor and manage children's gadget usage.",
+                            text = "Pantau dan kelola penggunaan gadget anak-anak menggunakan tools kami.",
                             modifier = Modifier
                                 .padding(6.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             fontSize = 14.sp
                         )
                     }
@@ -81,22 +81,22 @@ fun HomeScreen(navController: NavController) {
                     Box(modifier = Modifier.padding(12.dp)) {
                         Column {
                             Text(
-                                text = "Apps Usage Stats",
+                                text = "Statistik Penggunaan Aplikasi",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
 
                             Text(
-                                text = "This feature ensure that you can see your child's app usage total time in real-time.",
+                                text = "Fitur ini memastikan Anda dapat melihat total waktu penggunaan aplikasi anak Anda secara real-time.",
                                 modifier = Modifier.padding(8.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppsUsage.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }
@@ -118,22 +118,22 @@ fun HomeScreen(navController: NavController) {
                     Box(modifier = Modifier.padding(16.dp)) {
                         Column {
                             Text(
-                                text = "Lock Specific Application",
+                                text = "Kunci Aplikasi Tertentu",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
 
                             Text(
-                                text = "Through our app locker, you can gain the ability to secure or unlock certain apps remotely.",
+                                text = "Melalui pengunci aplikasi kami, Anda dapat mengamankan atau membuka kunci aplikasi tertentu secara mudah.",
                                 modifier = Modifier.padding(8.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppLock.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }
@@ -153,22 +153,22 @@ fun HomeScreen(navController: NavController) {
                     Box(modifier = Modifier.padding(16.dp)) {
                         Column {
                             Text(
-                                text = "Lock Scheduler",
+                                text = "Penjadwalan Kunci",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
 
                             Text(
-                                text = "Through this feature, you can easily set and adjust time limits of gadget usage.",
+                                text = "Melalui fitur ini, Anda dapat dengan mudah menyetel dan menyesuaikan batasan waktu penggunaan gadget.",
                                 modifier = Modifier.padding(8.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppLockScheduler.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }

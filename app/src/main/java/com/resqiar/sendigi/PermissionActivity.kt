@@ -21,31 +21,31 @@ class PermissionActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val styledDescription = buildAnnotatedString {
-            append("To use this app effectively, please grant the necessary permissions:\n\n")
+            append("Untuk menggunakan aplikasi ini secara efektif, mohon berikan izin yang diperlukan:\n\n")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Usage Stats Permission:")
+                append("Izin Usage Stats:")
             }
 
-            append("\n1. Open your device settings.\n 2. Navigate to ")
+            append("\n1. Buka pengaturan perangkat Anda.\n 2. Navigasi ke ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"Usage Access\"")
             }
 
-            append(" or ")
+            append(" atau ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"Application Manager\".")
             }
 
-            append("\n3. Find and select ")
+            append("\n3. Cari dan pilih ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"SenDigi\".")
             }
 
-            append("\n4. Permit or Enable ")
+            append("\n4. Permit atau Enable ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"Usage Access\".")
@@ -54,17 +54,17 @@ class PermissionActivity : ComponentActivity() {
             append("\n\n")
 
             withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
-                append("Granting this permission allows us to provide you with your device data.")
+                append("Memberikan izin ini memungkinkan kami untuk menyediakan data perangkat Anda.")
             }
         }
 
         setContent {
             AppTheme {
                 MinimalDialog(
-                    title = "Usage Stats Permissions Required",
+                    title = "Dibutuhkan Izin Usage Stats",
                     styledDescription,
-                    cancelText = "Exit",
-                    confirmText = "Go to Settings",
+                    cancelText = "Keluar",
+                    confirmText = "Pergi ke Settings",
                     onDismiss = {
                         finish()
                         exitProcess(0)

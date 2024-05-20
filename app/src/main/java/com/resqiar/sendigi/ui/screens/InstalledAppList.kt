@@ -47,7 +47,7 @@ fun InstalledAppsList(apps: ArrayList<InstalledApp>, onItemClick: (InstalledApp)
             ) {
                 Icon(imageVector = Icons.Filled.Info, contentDescription = "Info", modifier = Modifier.padding(6.dp))
                 Text(
-                    text = "You could pick the preferred app to schedule for lock here.",
+                    text = "Pilih aplikasi yang Anda inginkan untuk dijadwalkan terkunci di sini.",
                     modifier = Modifier
                         .padding(6.dp),
                     textAlign = TextAlign.Justify,

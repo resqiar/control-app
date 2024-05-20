@@ -71,7 +71,7 @@ fun AppList(metadata: InstalledApp) {
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                     Text(
-                        text = "${metadata.screenTime.first} Hours ${metadata.screenTime.second} Minutes",
+                        text = "${metadata.screenTime.first} Jam ${metadata.screenTime.second} Menit",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(top = 6.dp).padding(horizontal = 4.dp)
                     )

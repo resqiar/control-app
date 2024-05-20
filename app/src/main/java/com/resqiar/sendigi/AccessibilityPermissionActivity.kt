@@ -21,31 +21,31 @@ class AccessibilityPermissionActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val styledDescription = buildAnnotatedString {
-            append("To use this app effectively, please grant the necessary permissions:\n\n")
+            append("Untuk menggunakan aplikasi ini secara efektif, mohon berikan izin yang diperlukan:\n\n")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Accessibility Permission:")
+                append("Izin Aksesibilitas:")
             }
 
-            append("\n1. Open your device settings.\n2. Navigate to ")
+            append("\n1. Buka pengaturan perangkat Anda.\n2. Navigasi ke ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("\"Accessibility\".")
+                append("\"Aksesibilitas\".")
             }
 
-            append("\n3. Find and select ")
+            append("\n3. Cari dan pilih ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"SenDigi\".")
             }
 
-            append("\n4. Tap ")
+            append("\n4. Ketuk ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("\"Enable Service\".")
+                append("\"Aktifkan Layanan\".")
             }
 
-            append("\n5. Toggle the switch for ")
+            append("\n5. Ketuk switch untuk ")
 
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("\"SenDigi\".")
@@ -54,17 +54,17 @@ class AccessibilityPermissionActivity : ComponentActivity() {
             append("\n\n")
 
             withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
-                append("This permission is necessary to enable the locking feature effectively.")
+                append("Izin ini diperlukan untuk mengaktifkan fitur penguncian secara efektif.")
             }
         }
 
         setContent {
             AppTheme {
                 MinimalDialog(
-                    title = "Accessibility Permissions Required",
+                    title = "Dibutuhkan Izin Aksesibilitas",
                     styledDescription,
-                    cancelText = "Exit",
-                    confirmText = "Go to Settings",
+                    cancelText = "Keluar",
+                    confirmText = "Pergi ke Settings",
                     onDismiss = {
                         finish()
                         exitProcess(0)

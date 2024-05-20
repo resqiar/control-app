@@ -212,14 +212,14 @@ fun AppItem(
                     onCheckedChange = { isChecked ->
                         isAppLocked = isChecked
                         if (isChecked) {
-                            Toast.makeText(context, "App Successfully Locked!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Aplikasi Berhasil Terkunci!", Toast.LENGTH_SHORT).show()
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
                                     viewModel.lockApplication(context, app.packageName, true)
                                 }
                             }
                         } else {
-                            Toast.makeText(context, "App Successfully Unlocked!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Aplikasi Berhasil Terbuka!", Toast.LENGTH_SHORT).show()
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
                                     viewModel.lockApplication(context, app.packageName, false)
