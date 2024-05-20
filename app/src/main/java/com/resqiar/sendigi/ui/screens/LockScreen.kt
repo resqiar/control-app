@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,42 +38,48 @@ fun LockScreen(pkgName: String) {
     val ctx = LocalContext.current
 
     AppTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_sendigi),
-                contentDescription = "Logo SenDigi",
+        Surface (color = Color.White) {
+            Column(
                 modifier = Modifier
-                    .width(400.dp)
-                    .height(400.dp)
-                    .padding(bottom = 8.dp)
-            )
-            Text(
-                text = "This Application is Locked by Your Parent",
-                modifier = Modifier.padding(bottom = 16.dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 17.sp,
-                    textAlign = TextAlign.Center,
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.security),
+                    contentDescription = "Logo SenDigi",
+                    modifier = Modifier
+                        .width(400.dp)
+                        .height(400.dp)
+                        .padding(bottom = 8.dp)
                 )
-            )
-            Text(
-                text = "Use your time and device more responsibly.",
-                modifier = Modifier.padding(bottom = 24.dp),
-                textAlign = TextAlign.Center,
-            )
-            Button(onClick = {
-                exitToHome(ctx, pkgName)
-            }) {
-                Text("Close the Application")
+                Text(
+                    text = "This Application is Locked by Your Parent",
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Center,
+
+                        )
+                )
+                Text(
+                    text = "Use your time and device more responsibly.",
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    textAlign = TextAlign.Center,
+                )
+                Button(onClick = {
+                    exitToHome(ctx, pkgName)
+                }) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = null, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+                    Text("Close the Application", Modifier.padding(start = 4.dp, end = 4.dp))
+
+                }
             }
         }
+
     }
 }
 
