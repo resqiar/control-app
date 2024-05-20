@@ -129,9 +129,9 @@ fun SchedulingScreen(packageName: String, appName: String) {
                     ) {
                         Icon(imageVector = Icons.Filled.Info, contentDescription = "Info", modifier = Modifier.padding(6.dp))
                         Text(
-                            text = "You could set the preferred time or dates to lock your child's apps here.",
+                            text = "Anda dapat menyetel waktu atau tanggal yang diinginkan untuk mengunci aplikasi anak Anda di sini.",
                             modifier = Modifier
-                                .padding(6.dp),
+                                .padding(end = 26.dp, top = 4.dp, bottom = 4.dp),
                             textAlign = TextAlign.Justify,
                             fontSize = 14.sp
                         )
@@ -153,7 +153,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                     ) {
                         Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit", modifier = Modifier.padding(6.dp))
                         Text(
-                            text = "You are currently editing: $appName",
+                            text = "Saat ini Anda sedang mengedit: $appName",
                             modifier = Modifier
                                 .padding(6.dp),
                             textAlign = TextAlign.Justify,
@@ -166,20 +166,20 @@ fun SchedulingScreen(packageName: String, appName: String) {
                 Card(modifier = Modifier.padding(16.dp)) {
                     Column {
                         Text(
-                            text = "Lock App by Dates",
+                            text = "Kunci Aplikasi berdasarkan Tanggal",
                             modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 4.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 20.sp
+                            fontSize = 18.sp
                         )
                         Text(
-                            text = "You can use this feature to lock $appName by dates. Start by clicking the Set Start Dates below. ",
+                            text = "Anda dapat menggunakan fitur ini untuk mengunci $appName berdasarkan tanggal. Mulai dengan mengklik Pilih Tanggal di bawah. ",
                             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
                             textAlign = TextAlign.Justify,
                             fontSize = 14.sp
                         )
                         Text(
-                            text = "Selected Dates:",
+                            text = "Tanggal yang Dipilih:",
                             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp),
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
@@ -197,7 +197,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             )
                         } else {
                             Text(
-                                text = if (date == "") "No dates selected" else date,
+                                text = if (date == "") "Tidak ada tanggal yang dipilih" else date,
                                 modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
@@ -210,7 +210,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             Button( modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 22.dp, end = 22.dp), onClick = { calendarState.show() }) {
-                                Text("Set Dates")
+                                Text("Pilih Tanggal")
                             }
                             if (date != "") {
                                 Button(
@@ -233,20 +233,20 @@ fun SchedulingScreen(packageName: String, appName: String) {
                 Card(modifier = Modifier.padding(16.dp)) {
                     Column {
                         Text(
-                            text = "Lock App by Time",
+                            text = "Kunci Aplikasi berdasarkan Waktu",
                             modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 4.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 20.sp
                         )
                         Text(
-                            text = "You can use this feature to lock $appName by time. Start by clicking the Set Start Time below. ",
+                            text = "Anda dapat menggunakan fitur ini untuk mengunci $appName berdasarkan waktu. Mulai dengan mengklik Pilih Waktu Mulai di bawah.",
                             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
                             textAlign = TextAlign.Justify,
                             fontSize = 14.sp
                         )
                         Text(
-                            text = "Selected Start Time - End Time:",
+                            text = "Waktu yang Dipilih:",
                             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp),
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
@@ -264,7 +264,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             )
                         } else {
                             Text(
-                                text = "${if (startTime == "") "No time selected" else startTime} - ${if (endTime == "") "No time selected" else endTime}",
+                                text = "${if (startTime == "") "Tidak ada waktu mulai" else startTime} - ${if (endTime == "") "Tidak ada waktu berakhir" else endTime}",
                                 modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp, bottom = 12.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
@@ -284,11 +284,11 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                     onClick = { clockStartState.show() },
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    Text("Set Start Time")
+                                    Text("Pilih Mulai", fontSize = 12.sp)
                                 }
                                 Spacer(modifier = Modifier.width(16.dp))
                                 Button(onClick = { clockEndState.show() }, modifier = Modifier.weight(1f)) {
-                                    Text("Set End Time")
+                                    Text("Pilih Berakhir", fontSize = 12.sp)
                                 }
                             }
 
@@ -306,7 +306,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                         contentColor = Color.Gray,
                                     )
                                 ) {
-                                    Text("Reset Times")
+                                    Text("Atur Ulang Waktu")
                                 }
                             }
                         }
@@ -335,12 +335,12 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                 setEndTime("")
                                 setDate("")
 
-                                Toast.makeText(context, "Successfully trigger a lock scheduler for $appName", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Berhasil memulai penjadwalan untuk $appName", Toast.LENGTH_LONG).show()
                             },
                             modifier = Modifier.weight(1f),
                             enabled = isValid(date, startTime, endTime)
                         ) {
-                            Text("Trigger Scheduler")
+                            Text("Mulai Penjadwalan")
                         }
 
                         if (savedDate.isNotEmpty() || savedStartTime.isNotEmpty() || savedEndTime.isNotEmpty()) {
@@ -360,11 +360,11 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                     setEndTime("")
                                     setDate("")
 
-                                    Toast.makeText(context, "Successfully reset a lock scheduler for $appName", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Berhasil mengatur ulang penjadwalan untuk $appName", Toast.LENGTH_LONG).show()
                                 },
                                 modifier = Modifier.weight(1f),
                             ) {
-                                Text("Reset Scheduler")
+                                Text("Atur Ulang")
                             }
                         }
                     }

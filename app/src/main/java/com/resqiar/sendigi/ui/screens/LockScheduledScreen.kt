@@ -56,7 +56,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                 // only show text when parent scheduled by Date
                 if (!dates.isNullOrEmpty()) {
                     Text(
-                        text = "This Application is Locked by Your Parent",
+                        text = "Aplikasi ini Terkunci!",
                         modifier = Modifier.padding(bottom = 16.dp),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
@@ -66,7 +66,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                             )
                     )
                     Text(
-                        text = "From ${dates.first()} until ${dates.last()}",
+                        text = "Mulai ${dates.first()} sampai ${dates.last()}",
                         modifier = Modifier.padding(bottom = 16.dp),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
@@ -80,7 +80,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                 // only show text when parent scheduled by Time
                 if (!startTime.isNullOrEmpty() && !endTime.isNullOrEmpty()) {
                     Text(
-                        text = "This Application is Locked by Your Parent",
+                        text = "Aplikasi ini Terkunci!",
                         modifier = Modifier.padding(bottom = 16.dp),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
@@ -89,7 +89,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                         )
                     )
                     Text(
-                        text = "From $startTime until $endTime",
+                        text = "Mulai $startTime sampai $endTime",
                         modifier = Modifier.padding(bottom = 16.dp),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
@@ -100,7 +100,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                 }
 
                 Text(
-                    text = "Use your time and device more responsibly.",
+                    text = "Gunakan waktu dan perangkat Anda dengan lebih bertanggung jawab.",
                     modifier = Modifier.padding(bottom = 24.dp),
                     style = TextStyle(textAlign = TextAlign.Center)
                 )
@@ -108,7 +108,7 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                     exitToHome(ctx, pkgName)
                 }) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = null, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
-                    Text("Close the Application", Modifier.padding(start = 4.dp, end = 4.dp))
+                    Text("Tutup Aplikasi", Modifier.padding(start = 4.dp, end = 4.dp))
 
                 }
             }

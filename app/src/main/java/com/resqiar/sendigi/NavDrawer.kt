@@ -91,7 +91,7 @@ fun NavDrawer() {
                             }
                         })
                     NavigationDrawerItem(
-                        label = { Text(text = "Apps Usage Stats") },
+                        label = { Text(text = "Statistik Penggunaan Aplikasi") },
                         selected = false,
                         modifier = Modifier.padding(9.dp),
                         icon = {
@@ -110,7 +110,7 @@ fun NavDrawer() {
                         })
 
                     NavigationDrawerItem(
-                        label = { Text(text = "Lock App") },
+                        label = { Text(text = "Kunci Aplikasi Tertentu") },
                         selected = false,
                         modifier = Modifier.padding(9.dp),
                         icon = {
@@ -129,7 +129,7 @@ fun NavDrawer() {
                         })
 
                     NavigationDrawerItem(
-                        label = { Text(text = "App Lock Scheduler") },
+                        label = { Text(text = "Penjadwalan Kunci") },
                         selected = false,
                         modifier = Modifier.padding(9.dp),
                         icon = {
@@ -148,13 +148,13 @@ fun NavDrawer() {
                         })
 
                     NavigationDrawerItem(
-                        label = { Text(text = "Logout") },
+                        label = { Text(text = "Keluar") },
                         selected = false,
                         modifier = Modifier.padding(9.dp),
                         icon = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                                contentDescription = "Logout"
+                                contentDescription = "Keluar"
                             )
                         },
                         onClick = {
@@ -173,7 +173,7 @@ fun NavDrawer() {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 context.startActivity(intent)
                             }
-                            Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Berhasil Keluar", Toast.LENGTH_SHORT).show()
                         })
 
                 }

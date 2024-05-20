@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,9 +73,9 @@ fun LoginContent() {
                     modifier = Modifier.padding(start = 22.dp, end = 22.dp)
                 ) {
 
-                    Text(text = "Log In", color = MaterialTheme.colorScheme.primary, fontSize = 38.sp)
-                    Text(text = "You need to be logged in before using the app", fontSize = 14.sp,
-                        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
+                    Text(text = "Masuk", color = MaterialTheme.colorScheme.primary, fontSize = 38.sp)
+                    Text(text = "Anda harus masuk sebelum menggunakan aplikasi ini", fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp, start = 42.dp, end = 42.dp), textAlign = TextAlign.Justify)
 
                     Button(
                         onClick = {
@@ -90,7 +91,7 @@ fun LoginContent() {
                                 contentDescription = null,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
-                            Text(text = "Continue with Google")
+                            Text(text = "Lanjutkan dengan Google")
                         }
                     }
 
