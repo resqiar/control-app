@@ -74,7 +74,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                                             _isLoggedIn.value = true
                                             setLoggedIn(context, post?.token ?: "", post?.id ?: "")
 
-                                            Toast.makeText(context, "Successfully signed in!", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "Berhasil Masuk!", Toast.LENGTH_SHORT).show()
 
                                             context.startActivity(
                                                 Intent(context, MainActivity::class.java)
