@@ -63,7 +63,7 @@ fun HomeScreen(navController: NavController) {
                             text = "Your trusted solution to monitor and manage children's gadget usage.",
                             modifier = Modifier
                                 .padding(6.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             fontSize = 14.sp
                         )
                     }
@@ -83,7 +83,7 @@ fun HomeScreen(navController: NavController) {
                             Text(
                                 text = "Apps Usage Stats",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
@@ -96,7 +96,7 @@ fun HomeScreen(navController: NavController) {
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppsUsage.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }
@@ -120,20 +120,20 @@ fun HomeScreen(navController: NavController) {
                             Text(
                                 text = "Lock Specific Application",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
 
                             Text(
-                                text = "Through our app locker, you can gain the ability to secure or unlock certain apps remotely.",
+                                text = "Through our app locker, you can gain the ability to lock or unlock certain application.",
                                 modifier = Modifier.padding(8.dp),
                                 textAlign = TextAlign.Justify,
                                 fontSize = 14.sp
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppLock.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }
@@ -155,7 +155,7 @@ fun HomeScreen(navController: NavController) {
                             Text(
                                 text = "Lock Scheduler",
                                 modifier = Modifier.padding(8.dp),
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Left,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp
                             )
@@ -168,7 +168,7 @@ fun HomeScreen(navController: NavController) {
                             )
                             Button(onClick = {
                                 navController.navigate(Screens.AppLockScheduler.screens)
-                            }, Modifier.padding(4.dp),) {
+                            }, Modifier.padding(2.dp),) {
                                 Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "add",)
                             }
