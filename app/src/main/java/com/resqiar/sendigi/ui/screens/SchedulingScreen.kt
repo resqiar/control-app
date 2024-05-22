@@ -168,7 +168,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                         Text(
                             text = "Lock App by Dates",
                             modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 4.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 20.sp
                         )
@@ -235,7 +235,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                         Text(
                             text = "Lock App by Time",
                             modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 4.dp),
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Left,
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 20.sp
                         )
@@ -340,7 +340,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             modifier = Modifier.weight(1f),
                             enabled = isValid(date, startTime, endTime)
                         ) {
-                            Text("Trigger Scheduler")
+                            Text("Start Scheduling")
                         }
 
                         if (savedDate.isNotEmpty() || savedStartTime.isNotEmpty() || savedEndTime.isNotEmpty()) {
