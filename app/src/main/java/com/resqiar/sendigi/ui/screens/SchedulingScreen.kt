@@ -45,6 +45,7 @@ import com.resqiar.sendigi.ui.theme.AppTheme
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.resqiar.sendigi.utils.api.sendApplicationDataWithDeviceData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -325,6 +326,9 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             onClick = {
                                 coroutineScope.launch(Dispatchers.IO) {
                                     triggerScheduler(packageName, date, startTime, endTime)
+
+                                    // send updated data in the background
+                                    sendApplicationDataWithDeviceData(context)
                                 }
 
                                 // save saved date, start time, end time
@@ -350,6 +354,9 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                 onClick = {
                                     coroutineScope.launch(Dispatchers.IO) {
                                         triggerScheduler(packageName, "", "", "")
+
+                                        // send updated data in the background
+                                        sendApplicationDataWithDeviceData(context)
                                     }
 
                                     // reset saved date, start time, end time
