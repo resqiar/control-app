@@ -20,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.time.LocalTime
 import java.util.Date
 import java.util.Locale
 
@@ -38,9 +38,7 @@ class LockerAccessibilityService : AccessibilityService() {
                 if (info != null) {
                     val current = Date()
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
                     val currentFormattedDate = dateFormat.format(current)
-                    val currentFormattedTime = timeFormat.format(current)
 
                     // if current opened app is locked by "Date Scheduler"
                     if (!info.lockDates.isNullOrEmpty()) {
@@ -66,25 +64,8 @@ class LockerAccessibilityService : AccessibilityService() {
 
                     // if current opened app is locked by "Time Scheduler"
                     else if (!info.lockStartTime.isNullOrEmpty() && !info.lockEndTime.isNullOrEmpty()) {
-                        // change current time to calendar instance
-                        val currentCalendar = Calendar.getInstance()
-                        currentCalendar.time = timeFormat.parse(currentFormattedTime)!!
-
-                        // change lock start time to calendar instance
-                        val startCalendar = Calendar.getInstance()
-                        startCalendar.time = timeFormat.parse(info.lockStartTime)!!
-
-                        // change lock end time to calendar instance
-                        val endCalendar = Calendar.getInstance()
-                        endCalendar.time = timeFormat.parse(info.lockEndTime)!!
-
-                        // convert all calendars to time in milliseconds
-                        val currentTimeMillis = currentCalendar.timeInMillis
-                        val startTimeMillis = startCalendar.timeInMillis
-                        val endTimeMillis = endCalendar.timeInMillis
-
                         // check if current time is in the range of start - end time
-                        val locked = currentTimeMillis in startTimeMillis..<endTimeMillis
+                        val locked = isWithinTimeRange(info.lockStartTime, info.lockEndTime)
 
                         if (locked) {
                             // save log activity
@@ -175,3 +156,26 @@ class LockerAccessibilityService : AccessibilityService() {
             })
         }
     }
+
+fun isWithinTimeRange(startTime: String, endTime: String): Boolean {
+    val currentTime = LocalTime.now()
+    val currentTimeMinutes = currentTime.hour * 60 + currentTime.minute
+
+    val startTimeParts = startTime.split(":").map { it.toInt() }
+    val endTimeParts = endTime.split(":").map { it.toInt() }
+
+    val startHour = startTimeParts[0]
+    val startMinute = startTimeParts[1]
+
+    val endHour = endTimeParts[0]
+    val endMinute = endTimeParts[1]
+
+    val startTimeMinutes = startHour * 60 + startMinute
+    val endTimeMinutes = endHour * 60 + endMinute
+
+    return if (startTimeMinutes <= endTimeMinutes) {
+        currentTimeMinutes in startTimeMinutes until endTimeMinutes
+    } else {
+        currentTimeMinutes >= startTimeMinutes || currentTimeMinutes < endTimeMinutes
+    }
+}
