@@ -325,7 +325,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                         Button(
                             onClick = {
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    triggerScheduler(packageName, date, startTime, endTime)
+                                    triggerScheduler(packageName, date, startTime, endTime, true)
 
                                     // send updated data in the background
                                     sendApplicationDataWithDeviceData(context)
@@ -353,7 +353,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             Button(
                                 onClick = {
                                     coroutineScope.launch(Dispatchers.IO) {
-                                        triggerScheduler(packageName, "", "", "")
+                                        triggerScheduler(packageName, "", "", "", false)
 
                                         // send updated data in the background
                                         sendApplicationDataWithDeviceData(context)
@@ -391,12 +391,13 @@ private fun isValid(date: String, startTime: String, endTime: String): Boolean {
     return date != "" || (startTime != "" && endTime != "")
 }
 
-private suspend fun triggerScheduler(packageName: String, date: String, startTime: String, endTime: String) {
+private suspend fun triggerScheduler(packageName: String, date: String, startTime: String, endTime: String, lockStatus: Boolean) {
     val infoDao: AppInfoDao = ApplicationActivity.getInstance().appInfoDao()
     infoDao.updateScheduler(
         packageName = packageName,
         lockDates = date,
         lockStartTime = startTime,
         lockEndTime = endTime,
+        lockStatus = lockStatus,
     )
 }
