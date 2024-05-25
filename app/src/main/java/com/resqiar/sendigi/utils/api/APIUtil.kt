@@ -176,7 +176,7 @@ fun initListenMQ(ctx: Context) {
         "${userId}_${deviceMetadata.androidId}",
         false,
         false,
-        true,
+        false,
         null,
     )
 

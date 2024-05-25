@@ -24,7 +24,7 @@ object BackgroundTaskUtil {
         if (!isBackgroundRunning) {
             isBackgroundRunning = true
             val handler = Handler(Looper.getMainLooper())
-            val delayMillis: Long = 60 * 5000 // 5 minute interval
+            val delayMillis: Long = 60 * 3000 // 3 minute interval
 
             val runnable = object : Runnable {
                 override fun run() {
