@@ -26,7 +26,7 @@ import java.util.Locale
 
 class LockerAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.packageName.isNullOrEmpty()) {
+        if (!event.packageName.isNullOrEmpty()) {
             val packageName = event.packageName.toString()
             val context = this
             val infoDao = ApplicationActivity.getInstance().appInfoDao()
@@ -110,7 +110,7 @@ class LockerAccessibilityService : AccessibilityService() {
         val info = AccessibilityServiceInfo()
 
         info.apply {
-            eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            eventTypes = AccessibilityEvent.TYPES_ALL_MASK
             feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN
             notificationTimeout = 100
         }
