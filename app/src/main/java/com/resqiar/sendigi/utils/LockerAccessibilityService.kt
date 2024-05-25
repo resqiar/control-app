@@ -25,13 +25,26 @@ import java.util.Date
 import java.util.Locale
 
 class LockerAccessibilityService : AccessibilityService() {
+    private var lastProcessedTime: Long = 0
+    private val throttleDelay: Long = 3000 // 3s
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (!event.packageName.isNullOrEmpty()) {
+        if (checkEventType(event) && !event.packageName.isNullOrEmpty()) {
             val packageName = event.packageName.toString()
             val context = this
             val infoDao = ApplicationActivity.getInstance().appInfoDao()
+            val isWindowChanged = event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
 
-            CoroutineScope(Dispatchers.IO).launch {
+            coroutineScope.launch {
+                if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastProcessedTime < throttleDelay) {
+                        return@launch
+                    }
+                    lastProcessedTime = currentTime
+                }
+
                 // Get application info from local database
                 val info = infoDao.getAppInfo(packageName)
 
@@ -51,8 +64,10 @@ class LockerAccessibilityService : AccessibilityService() {
                         }
 
                         if (locked) {
-                            // save log activity
-                            syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+                            if (isWindowChanged) {
+                                // save log activity
+                                syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+                            }
 
                             val intent = Intent(context, LockScheduledActivity::class.java)
                             intent.putExtra("PACKAGE_NAME", packageName)
@@ -68,8 +83,15 @@ class LockerAccessibilityService : AccessibilityService() {
                         val locked = isWithinTimeRange(info.lockStartTime, info.lockEndTime)
 
                         if (locked) {
-                            // save log activity
-                            syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+                            if (isWindowChanged) {
+                                // save log activity
+                                syncDeviceActivity(
+                                    context,
+                                    info.name,
+                                    info.packageName,
+                                    "[Warning] Attempt to open locked application"
+                                )
+                            }
 
                             val intent = Intent(context, LockScheduledActivity::class.java)
                             intent.putExtra("PACKAGE_NAME", packageName)
@@ -82,8 +104,15 @@ class LockerAccessibilityService : AccessibilityService() {
 
                     // if current opened app is locked by "Specific"
                     else if (info.lockStatus) {
-                        // save log activity
-                        syncDeviceActivity(context, info.name, info.packageName, "[Warning] Attempt to open locked application")
+                        if (isWindowChanged) {
+                            // save log activity
+                            syncDeviceActivity(
+                                context,
+                                info.name,
+                                info.packageName,
+                                "[Warning] Attempt to open locked application"
+                            )
+                        }
 
                         val intent = Intent(context, LockScreenActivity::class.java)
                         intent.putExtra("PACKAGE_NAME", packageName)
@@ -92,8 +121,10 @@ class LockerAccessibilityService : AccessibilityService() {
                     }
 
                     else {
-                        // Save neutral log
-                        syncDeviceActivity(context, info.name, info.packageName, "[Info] Opening application")
+                        if (isWindowChanged) {
+                            // Save neutral log
+                            syncDeviceActivity(context, info.name, info.packageName, "[Info] Opening application")
+                        }
                     }
                 }
             }
@@ -110,7 +141,7 @@ class LockerAccessibilityService : AccessibilityService() {
         val info = AccessibilityServiceInfo()
 
         info.apply {
-            eventTypes = AccessibilityEvent.TYPES_ALL_MASK
+            eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN
             notificationTimeout = 100
         }
@@ -119,43 +150,43 @@ class LockerAccessibilityService : AccessibilityService() {
     }
 
     private fun syncDeviceActivity(context: Context, name: String, packageName: String, desc: String) {
-            // skip logging parental app
-            if (packageName == context.packageName) return
+        // skip logging parental app
+        if (packageName == context.packageName) return
 
-            val metadata = getDeviceMetadata(context)
+        val metadata = getDeviceMetadata(context)
 
-            val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
-                .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
+        val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
+            .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
 
-            // if there is no token, skip
-            if (token.isEmpty()) return
+        // if there is no token, skip
+        if (token.isEmpty()) return
 
-            val call = ApiClient.apiService.syncDeviceActivity(
-                token = token,
-                DeviceActivity(
-                    deviceId = metadata.androidId,
-                    name = name,
-                    packageName = packageName,
-                    description = desc,
-                )
+        val call = ApiClient.apiService.syncDeviceActivity(
+            token = token,
+            DeviceActivity(
+                deviceId = metadata.androidId,
+                name = name,
+                packageName = packageName,
+                description = desc,
             )
+        )
 
-            call.enqueue(object: Callback<StatusResponse> {
-                override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
-                    if (response.isSuccessful) {
-                        val post = response.body()
-                        Log.d("Sync Device Activity", "Syncing to remote server for: ${metadata.androidId} -> ${post?.status}")
-                    } else {
-                        Log.d("HTTP NOT OK", response.toString())
-                    }
+        call.enqueue(object: Callback<StatusResponse> {
+            override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+                if (response.isSuccessful) {
+                    val post = response.body()
+                    Log.d("Sync Device Activity", "Syncing to remote server for: ${metadata.androidId} -> ${post?.status}")
+                } else {
+                    Log.d("HTTP NOT OK", response.toString())
                 }
+            }
 
-                override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
-                    Log.d("HTTP FAILURE", t.message.toString())
-                }
-            })
-        }
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                Log.d("HTTP FAILURE", t.message.toString())
+            }
+        })
     }
+}
 
 fun isWithinTimeRange(startTime: String, endTime: String): Boolean {
     val currentTime = LocalTime.now()
@@ -177,5 +208,13 @@ fun isWithinTimeRange(startTime: String, endTime: String): Boolean {
         currentTimeMinutes in startTimeMinutes until endTimeMinutes
     } else {
         currentTimeMinutes >= startTimeMinutes || currentTimeMinutes < endTimeMinutes
+    }
+}
+
+fun checkEventType(event: AccessibilityEvent): Boolean {
+    return when (event.eventType) {
+        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+        AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> true
+        else -> false
     }
 }
