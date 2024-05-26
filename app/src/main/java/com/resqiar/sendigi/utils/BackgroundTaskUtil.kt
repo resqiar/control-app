@@ -3,9 +3,7 @@ package com.resqiar.sendigi.utils
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.resqiar.sendigi.utils.api.getCurrentDeviceMetadata
-import com.resqiar.sendigi.utils.api.initListenMQ
 import com.resqiar.sendigi.utils.api.sendApplicationDataWithDeviceData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +13,6 @@ object BackgroundTaskUtil {
     private var isBackgroundRunning = false
 
     fun startBackgroundTask(context: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
-            // initiate RabbitMQ connection
-            initListenMQ(context)
-            Log.d("RabbitMQ Status", "Connected")
-        }
-
         if (!isBackgroundRunning) {
             isBackgroundRunning = true
             val handler = Handler(Looper.getMainLooper())

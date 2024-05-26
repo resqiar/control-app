@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.resqiar.sendigi.ui.theme.AppTheme
 import com.resqiar.sendigi.utils.BackgroundTaskUtil
+import com.resqiar.sendigi.utils.RabbitMQService
 import com.resqiar.sendigi.utils.checkAccessibility
 import com.resqiar.sendigi.utils.getUsageStatsPermission
 import com.resqiar.sendigi.viewModel.AuthViewModel
@@ -60,6 +61,10 @@ private fun handleAskPermissions(ctx: Context) {
 
     // if everything fine, trigger background task
     else {
+        // Start the RabbitMQ listener service
+        val intent = Intent(ctx, RabbitMQService::class.java)
+        ctx.startService(intent)
+
         BackgroundTaskUtil.startBackgroundTask(ctx)
     }
 }
