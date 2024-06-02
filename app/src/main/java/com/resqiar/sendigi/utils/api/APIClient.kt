@@ -6,6 +6,7 @@ import com.resqiar.sendigi.model.DeviceActivity
 import com.resqiar.sendigi.model.DeviceInfo
 import com.resqiar.sendigi.model.GooglePayload
 import com.google.gson.annotations.SerializedName
+import com.resqiar.sendigi.model.RequestMessage
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -60,5 +61,11 @@ interface ApiService {
     fun syncApp(
         @Header("Authorization") token: String,
         @Body payload: AppInfo
+    ): Call<StatusResponse>
+
+    @POST("/mobile/message/request")
+    fun requestMessage(
+        @Header("Authorization") token: String,
+        @Body payload: RequestMessage
     ): Call<StatusResponse>
 }

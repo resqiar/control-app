@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -26,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +38,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.resqiar.sendigi.R
 import com.resqiar.sendigi.ui.theme.AppTheme
+import com.resqiar.sendigi.utils.api.sendRequestMessage
+import kotlinx.coroutines.launch
 
 @Composable
 fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: String?, endTime: String?) {
     val ctx = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     AppTheme {
         Surface (color = Color.White) {
@@ -119,46 +126,81 @@ fun LockScheduledScreen(pkgName: String, dates: Array<String>?, startTime: Strin
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Row {
-                        Button(onClick = {
-                            exitToHome(ctx, pkgName)
-                        }, modifier = Modifier
-                            .padding(top = 18.dp, end = 2.dp)
-                            .weight(1f)) {
-//                            Icon(imageVector = Icons.Default.Close, contentDescription = null, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
-                            Text("Close Application", Modifier.padding(start = 4.dp, end = 4.dp))
-
-                        }
-                        Button(
+                    if (!showTextField) {
+                        Column(
                             modifier = Modifier
-                                .padding(top = 18.dp, start = 2.dp)
-                                .weight(1f),
-                            onClick = { showTextField = !showTextField },
+                                .fillMaxWidth()
+                                .padding(top = 18.dp, start = 18.dp, end = 18.dp)
+                                .height(IntrinsicSize.Min),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Text("Request Unlock")
+                            Button(
+                                onClick = {
+                                    exitToHome(ctx, pkgName)
+                                }, modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                    modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                                )
+                                Text("Close Application", Modifier.padding(start = 4.dp, end = 4.dp))
+
+                            }
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = Color.Gray,
+                                ),
+                                onClick = { showTextField = !showTextField },
+                            ) {
+                                Text("Request Unlock")
+                            }
                         }
                     }
 
-
                     if (showTextField) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            OutlinedTextField(
-                                value = textFieldValue,
-                                onValueChange = { textFieldValue = it },
-                                modifier = Modifier.weight(1f),
-                                label = { Text("Enter your reason") }
-                            )
-                            Button(
-                                onClick = { handleSendAction(textFieldValue, ctx)},
-                                modifier = Modifier.padding(start = 8.dp, top = 12.dp)
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Icon(imageVector = Icons.Default.Send, contentDescription = null)
+                                OutlinedTextField(
+                                    value = textFieldValue,
+                                    onValueChange = { textFieldValue = it },
+                                    modifier = Modifier.weight(1f),
+                                    label = { Text("Enter your reason") }
+                                )
+                                Button(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            handleSendAction(pkgName, textFieldValue, ctx)
+                                            textFieldValue = ""
+                                        }
+                                    },
+                                    modifier = Modifier.padding(start = 8.dp, top = 12.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Default.Send, contentDescription = null)
+                                }
+                            }
 
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = Color.Gray,
+                                ),
+                                onClick = { showTextField = !showTextField },
+                            ) {
+                                Text("Close Request")
                             }
                         }
                     }
@@ -186,8 +228,13 @@ private fun exitToHome(ctx: Context, pkgName: String) {
     ctx.startActivity(intent)
 }
 
-private fun handleSendAction(textFieldValue: String, context: Context) {
+private suspend fun handleSendAction(packageName: String, textFieldValue: String, context: Context) {
+    sendRequestMessage(textFieldValue, packageName, context)
+    Toast.makeText(context, "Request sent, please wait for further notification", Toast.LENGTH_SHORT).show()
+}
 
-    println(textFieldValue)
-    Toast.makeText(context, "Request sent successfully", Toast.LENGTH_SHORT).show()
+@Preview
+@Composable
+fun LockScheduledPreview() {
+    LockScheduledScreen("", arrayOf("12-07-2024"), "", "")
 }

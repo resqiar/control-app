@@ -20,6 +20,9 @@ import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.Consumer
 import com.rabbitmq.client.Envelope
 import com.rabbitmq.client.ShutdownSignalException
+import com.resqiar.sendigi.model.RequestMessage
+import com.resqiar.sendigi.model.WebRequestMessage
+import com.resqiar.sendigi.utils.showNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -117,6 +120,43 @@ suspend fun sendApplicationDataWithDeviceData(context: Context) {
     }
 }
 
+suspend fun sendRequestMessage(message: String, packageName: String, context: Context) {
+    val metadata = getDeviceMetadata(context)
+
+    // get token from shared pref
+    val token =  context.getSharedPreferences(Constants.LOG_TOKEN_PREF, Context.MODE_PRIVATE)
+        .getString(Constants.LOG_TOKEN_PREF, "") ?: ""
+
+    // if there is no token, skip
+    if (token.isEmpty()) return
+
+    withContext(Dispatchers.IO) {
+        val call = ApiClient.apiService.requestMessage(
+            token = token,
+            RequestMessage(
+                message = message,
+                packageName = packageName,
+                deviceId = metadata.androidId
+            ),
+        )
+
+        call.enqueue(object: Callback<StatusResponse> {
+            override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+                if (response.isSuccessful) {
+                    val post = response.body()
+                    Log.d("Sync Application", "Requesting message to remote server: ${metadata.androidId} -> ${post?.status}")
+                } else {
+                    Log.d("HTTP NOT OK", response.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                Log.d("HTTP FAILURE", t.message.toString())
+            }
+        })
+    }
+}
+
 suspend fun saveState(
     app: InstalledApp,
     metadata: ApplicationMetadata,
@@ -179,6 +219,13 @@ fun initListenMQ(ctx: Context) {
         false,
         null,
     )
+    val request_msg_q = ch.queueDeclare(
+        "message_${userId}_${deviceMetadata.androidId}",
+        false,
+        false,
+        true,
+        null,
+    )
 
     ch.basicConsume(
         q.queue,
@@ -200,6 +247,39 @@ fun initListenMQ(ctx: Context) {
 
                     // update local state to a new one
                     updateState(message)
+                }
+            }
+
+            override fun handleShutdownSignal(consumerTag: String?, sig: ShutdownSignalException?) {
+                sig?.let {
+                    Log.d("RabbitMQ Shutdown Signal", consumerTag.toString())
+                }
+            }
+
+            override fun handleConsumeOk(consumerTag: String?) {}
+            override fun handleCancelOk(consumerTag: String?) {}
+            override fun handleCancel(consumerTag: String?) {}
+            override fun handleRecoverOk(consumerTag: String?) {}
+        })
+
+    ch.basicConsume(
+        request_msg_q.queue,
+        true,
+        object : Consumer {
+            override fun handleDelivery(
+                consumerTag: String?,
+                envelope: Envelope?,
+                properties: AMQP.BasicProperties?,
+                body: ByteArray?
+            ) {
+                body?.let {
+                    val payload = Gson().fromJson(
+                        it.decodeToString(),
+                        WebRequestMessage::class.java
+                    )
+
+                    Log.d("[Queue] retrieving message from web: ", payload.message)
+                    showNotification(ctx, payload.message)
                 }
             }
 

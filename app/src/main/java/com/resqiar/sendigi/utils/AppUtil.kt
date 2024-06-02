@@ -1,13 +1,20 @@
 package com.resqiar.sendigi.utils
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.media.RingtoneManager
 import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.resqiar.sendigi.dao.AppInfoDao
 import com.resqiar.sendigi.model.AppInfo
@@ -121,5 +128,38 @@ suspend fun getApplicationMetadata(
                 lockEndTime = data?.lockEndTime
             ),
         )
+    }
+}
+
+fun showNotification(context: Context, message: String) {
+    val channelId = "message_channel"
+    val channelName = "Message from Parent"
+    val importance = NotificationManager.IMPORTANCE_DEFAULT
+    val soundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    val channel = NotificationChannel(channelId, channelName, importance)
+    channel.setShowBadge(false)
+    channel.setSound(soundURI, null)
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    manager.createNotificationChannel(channel)
+
+    val builder = NotificationCompat.Builder(context, channelId)
+        .setSmallIcon(android.R.drawable.ic_dialog_email)
+        .setContentTitle("Message from your Parent")
+        .setContentText(message)
+        .setStyle(NotificationCompat.BigTextStyle())
+        .setSound(soundURI)
+        .setVibrate(longArrayOf(0, 200, 500, 200, 500))
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+    with(NotificationManagerCompat.from(context)) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return@with
+        }
+        val currentTimestamp = System.currentTimeMillis()
+        notify(currentTimestamp.toInt(), builder.build())
     }
 }
