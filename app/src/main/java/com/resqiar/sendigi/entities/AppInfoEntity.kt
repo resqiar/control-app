@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.resqiar.sendigi.constants.Constants
 import java.util.UUID
 
 @Entity(
@@ -32,6 +33,9 @@ data class AppInfoEntity(
 
     @ColumnInfo(name = "lock_end_time")
     val lockEndTime: String? = "",
+
+    @ColumnInfo(name = "recurring")
+    val recurring: String = Constants.TIME_ONLY,
 
     @ColumnInfo(name = "icon")
     val icon: String? = null,

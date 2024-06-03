@@ -20,7 +20,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
@@ -50,17 +53,45 @@ class LockerAccessibilityService : AccessibilityService() {
 
                 if (info != null) {
                     val current = Date()
+                    val currentDate = LocalDate.now()
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val dayNow = currentDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
                     val currentFormattedDate = dateFormat.format(current)
 
                     // if current opened app is locked by "Date Scheduler"
                     if (!info.lockDates.isNullOrEmpty()) {
                         var locked = false
+                        var savedDates = listOf("")
 
-                        // scan through dates delimiters and fire the lock activity when needed
-                        val savedDates = info.lockDates.split(", ").map {
-                            if (currentFormattedDate == it) locked = true
-                            it
+                        when(info.recurring) {
+                            Constants.TIME_ONLY -> {
+                                // scan through dates delimiters and fire the lock activity when needed
+                                savedDates = info.lockDates.split(", ").map {
+                                    if (currentFormattedDate == it) locked = true
+                                    it
+                                }
+                            }
+                            Constants.DATE -> {
+                                // scan through dates delimiters and fire the lock activity when needed
+                                savedDates = info.lockDates.split(", ").map {
+                                    // Get the current date
+                                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                                    val date = LocalDate.parse(it, formatter)
+                                    if (date.dayOfMonth == currentDate.dayOfMonth) locked = true
+                                    "${currentDate.month} ${date.dayOfMonth}"
+                                }
+                            }
+                            Constants.DAY -> {
+                                // scan through dates delimiters and fire the lock activity when needed
+                                savedDates = info.lockDates.split(", ").map {
+                                    // Get the current date
+                                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                                    val date = LocalDate.parse(it, formatter)
+                                    val dayIt = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                                    if (dayNow == dayIt) locked = true
+                                    dayIt
+                                }
+                            }
                         }
 
                         if (locked) {

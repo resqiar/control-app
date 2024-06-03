@@ -1,6 +1,7 @@
 package com.resqiar.sendigi.ui.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -17,7 +18,6 @@ import androidx.compose.runtime.remember
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockSelection
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -29,8 +29,12 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -38,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.resqiar.sendigi.ApplicationActivity
 import com.resqiar.sendigi.dao.AppInfoDao
@@ -45,6 +50,7 @@ import com.resqiar.sendigi.ui.theme.AppTheme
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.resqiar.sendigi.constants.Constants
 import com.resqiar.sendigi.utils.api.sendApplicationDataWithDeviceData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,6 +65,8 @@ fun SchedulingScreen(packageName: String, appName: String) {
     val (savedStartTime, setSavedStartTime) = remember { mutableStateOf("") }
     val (savedEndTime, setSavedEndTime) = remember { mutableStateOf("") }
     val (date, setDate) = remember { mutableStateOf("") }
+    val (recurring, setRecurring) = remember { mutableStateOf(Constants.SCHEDULER_TIME_ONLY) }
+    val (menu, setMenu) = remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -74,6 +82,14 @@ fun SchedulingScreen(packageName: String, appName: String) {
                 }
                 if (!appMetadata.lockEndTime.isNullOrEmpty()) {
                     setSavedEndTime(appMetadata.lockEndTime)
+                }
+                if (appMetadata.recurring.isNotEmpty()) {
+                    when(appMetadata.recurring) {
+                        Constants.TIME_ONLY -> setRecurring(Constants.SCHEDULER_TIME_ONLY)
+                        Constants.DATE -> setRecurring(Constants.SCHEDULER_DATE)
+                        Constants.DAY -> setRecurring(Constants.SCHEDULER_DAY)
+                        else -> {}
+                    }
                 }
             }
         }
@@ -314,6 +330,72 @@ fun SchedulingScreen(packageName: String, appName: String) {
                     }
                 }
 
+                Card(modifier = Modifier.padding(16.dp)) {
+                    Column {
+                        Text(
+                            text = "Recurring Scheduler?",
+                            modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 4.dp),
+                            textAlign = TextAlign.Left,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "Set the scheduler to be recurring by setting it to repeat every specified dates or days.",
+                            modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 6.dp),
+                            textAlign = TextAlign.Justify,
+                            fontSize = 14.sp
+                        )
+
+                        ExposedDropdownMenuBox(
+                            expanded = menu,
+                            onExpandedChange = { setMenu(!menu) },
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                        ) {
+                            TextField(
+                                value = recurring,
+                                onValueChange = { setRecurring(it) },
+                                readOnly = true,
+                                label = { Text("Select a recurring option") },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = menu
+                                    )
+                                },
+                                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                                modifier = Modifier.fillMaxWidth().menuAnchor()
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = menu,
+                                onDismissRequest = { setMenu(false) },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        setRecurring(Constants.SCHEDULER_TIME_ONLY)
+                                        setMenu(false)
+                                    },
+                                    text = { Text("Repeat time Only (default)")}
+                                )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        setRecurring(Constants.SCHEDULER_DATE)
+                                        setMenu(false)
+                                    },
+                                    text = { Text("Repeat the date")}
+                                )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        setRecurring(Constants.SCHEDULER_DAY)
+                                        setMenu(false)
+                                    },
+                                    text = { Text("Repeat the day")}
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -325,7 +407,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                         Button(
                             onClick = {
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    triggerScheduler(packageName, date, startTime, endTime, true)
+                                    triggerScheduler(packageName, date, startTime, endTime, true, recurring)
 
                                     // send updated data in the background
                                     sendApplicationDataWithDeviceData(context)
@@ -353,7 +435,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                             Button(
                                 onClick = {
                                     coroutineScope.launch(Dispatchers.IO) {
-                                        triggerScheduler(packageName, "", "", "", false)
+                                        triggerScheduler(packageName, "", "", "", false, recurring)
 
                                         // send updated data in the background
                                         sendApplicationDataWithDeviceData(context)
@@ -366,6 +448,7 @@ fun SchedulingScreen(packageName: String, appName: String) {
                                     setStartTime("")
                                     setEndTime("")
                                     setDate("")
+                                    setRecurring(Constants.SCHEDULER_TIME_ONLY)
 
                                     Toast.makeText(context, "Successfully reset a lock scheduler for $appName", Toast.LENGTH_LONG).show()
                                 },
@@ -391,13 +474,30 @@ private fun isValid(date: String, startTime: String, endTime: String): Boolean {
     return date != "" || (startTime != "" && endTime != "")
 }
 
-private suspend fun triggerScheduler(packageName: String, date: String, startTime: String, endTime: String, lockStatus: Boolean) {
+private suspend fun triggerScheduler(packageName: String, date: String, startTime: String, endTime: String, lockStatus: Boolean, recurring: String) {
     val infoDao: AppInfoDao = ApplicationActivity.getInstance().appInfoDao()
+
+    var fixedRecurring = Constants.TIME_ONLY
+
+    when(recurring) {
+        Constants.SCHEDULER_TIME_ONLY -> fixedRecurring = Constants.TIME_ONLY
+        Constants.SCHEDULER_DATE -> fixedRecurring = Constants.DATE
+        Constants.SCHEDULER_DAY -> fixedRecurring = Constants.DAY
+        else -> {}
+    }
+
     infoDao.updateScheduler(
         packageName = packageName,
         lockDates = date,
         lockStartTime = startTime,
         lockEndTime = endTime,
         lockStatus = lockStatus,
+        recurring = fixedRecurring
     )
+}
+
+@Preview
+@Composable
+fun SchedulingScreenPreview() {
+    SchedulingScreen(packageName = "something", appName = "Something")
 }

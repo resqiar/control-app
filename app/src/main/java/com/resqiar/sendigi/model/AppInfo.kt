@@ -10,6 +10,7 @@ data class AppInfo (
     val dateLocked: String,
     val timeStartLocked: String,
     val timeEndLocked: String,
+    val recurring: String,
 )
 
 data class AppInfoMessage (
@@ -20,4 +21,5 @@ data class AppInfoMessage (
     val dateLocked: String,
     val timeStartLocked: String,
     val timeEndLocked: String,
+    val recurring: String,
 )

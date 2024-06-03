@@ -308,6 +308,7 @@ private fun updateState(message: AppInfoMessage) {
             dateLocked = message.dateLocked,
             timeStartLocked = message.timeStartLocked,
             timeEndLocked = message.timeEndLocked,
+            recurring = message.recurring
         )
     }
 }

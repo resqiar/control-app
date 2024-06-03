@@ -13,4 +13,10 @@ object Constants {
 //    const val RABBITMQ_PORT = 5672
     const val RABBITMQ_HOST = "103.76.129.93"
     const val RABBITMQ_PORT = 56722
+    const val SCHEDULER_TIME_ONLY = "Repeat Time Only"
+    const val SCHEDULER_DATE = "Repeat Dates"
+    const val SCHEDULER_DAY = "Repeat Days"
+    const val TIME_ONLY = "TIME"
+    const val DATE = "DATE"
+    const val DAY = "DAY"
 }

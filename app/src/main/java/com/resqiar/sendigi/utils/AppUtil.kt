@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.resqiar.sendigi.constants.Constants
 import com.resqiar.sendigi.dao.AppInfoDao
 import com.resqiar.sendigi.model.AppInfo
 import com.resqiar.sendigi.model.AppScheduledData
@@ -116,6 +117,7 @@ suspend fun getApplicationMetadata(
             dateLocked = data?.lockDates ?: "",
             timeStartLocked = data?.lockStartTime ?: "",
             timeEndLocked = data?.lockEndTime ?: "",
+            recurring = data?.recurring ?: Constants.TIME_ONLY,
         )
 
         ApplicationMetadata(
