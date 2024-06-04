@@ -113,7 +113,7 @@ suspend fun getApplicationMetadata(
             icon = icon,
             timeUsage = app.rawTime,
             lockStatus = status,
-            androidId = metadata.androidId,
+            deviceId = metadata.androidId,
             dateLocked = data?.lockDates ?: "",
             timeStartLocked = data?.lockStartTime ?: "",
             timeEndLocked = data?.lockEndTime ?: "",
